@@ -14,7 +14,7 @@ import java.util.List;
 public class OrderUseCaseImpl implements OrderUseCase {
 
     @Override
-    public void createOrder(Order order, OrderGateway orderGateway) throws OrderCreationException {
+    public Order createOrder(Order order, OrderGateway orderGateway) throws OrderCreationException {
 
         try {
             validateOrderCustomer(order.getCustomerId());
@@ -24,9 +24,11 @@ public class OrderUseCaseImpl implements OrderUseCase {
             order.setPaymentStatus(OrderPaymentStatus.PENDING);
             orderGateway.saveOrder(order);
 
+            return order;
+
         } catch (Exception ex) {
             throw new OrderCreationException(
-                    "ORDER-01",
+                    "ORDER-02",
                     String.format("Couldn't create order. Error: %s", ex.getMessage())
             );
         }

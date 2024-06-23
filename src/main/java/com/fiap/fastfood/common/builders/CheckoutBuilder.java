@@ -2,6 +2,7 @@ package com.fiap.fastfood.common.builders;
 
 import com.fiap.fastfood.common.dto.request.CheckoutRequest;
 import com.fiap.fastfood.common.dto.response.CheckoutResponse;
+import com.fiap.fastfood.common.utils.TimeConverter;
 import com.fiap.fastfood.core.entity.Checkout;
 import com.fiap.fastfood.external.orm.CheckoutORM;
 
@@ -32,11 +33,15 @@ public class CheckoutBuilder {
     }
 
     public static CheckoutORM fromDomainToOrm(Checkout checkout) {
-        return CheckoutORM.builder()
+        var checkoutORM = CheckoutORM.builder()
                 .id(checkout.getId())
                 .status(checkout.getStatus())
                 .orderId(checkout.getOrderId())
-                .createdAt(checkout.getCreatedAt())
                 .build();
+
+        if (checkout.getCreatedAt() != null)
+            checkoutORM.setCreatedAt(TimeConverter.convertToDateViaInstant(checkout.getCreatedAt()));
+
+        return checkoutORM;
     }
 }

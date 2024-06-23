@@ -27,7 +27,7 @@ public class CheckoutGatewayImpl implements CheckoutGateway {
 
     @Override
     public List<Checkout> findAll() {
-        final var orms = checkoutRepository.findAllByOrderByCreatedAtAsc();
+        final var orms = checkoutRepository.findAllByOrderIdOrderByCreatedAtAsc();
         final var checkouts = orms.stream().map(orm -> CheckoutBuilder.fromOrmToDomain(orm)).collect(Collectors.toList());
         return checkouts;
     }

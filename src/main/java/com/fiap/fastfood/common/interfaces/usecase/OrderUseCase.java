@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface OrderUseCase {
 
-    void createOrder(Order order, OrderGateway orderGateway) throws NoSuchEntityException, OrderCreationException;
+    Order createOrder(Order order, OrderGateway orderGateway) throws NoSuchEntityException, OrderCreationException;
 
     List<Order> listOrder(OrderGateway orderGateway);
 

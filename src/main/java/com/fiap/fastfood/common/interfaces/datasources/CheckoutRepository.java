@@ -8,5 +8,5 @@ import java.util.List;
 
 @EnableScan
 public interface CheckoutRepository extends CrudRepository<CheckoutORM, String> {
-    List<CheckoutORM> findAllByOrderByCreatedAtAsc();
+    List<CheckoutORM> findAllByOrderIdOrderByCreatedAtAsc();
 }

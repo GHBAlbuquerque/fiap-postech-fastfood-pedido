@@ -2,6 +2,7 @@ package com.fiap.fastfood.communication.controllers;
 
 import com.fiap.fastfood.common.builders.OrderBuilder;
 import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
+import com.fiap.fastfood.common.dto.response.CreatedOrderResponse;
 import com.fiap.fastfood.common.dto.response.GetOrderPaymentStatusResponse;
 import com.fiap.fastfood.common.dto.response.GetOrderResponse;
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
@@ -38,9 +39,11 @@ public class OrderController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
     })
-    @PostMapping(produces="application/json", consumes="application/json")
-    public void createOrder(@RequestBody CreateOrderRequest request) throws OrderCreationException, NoSuchEntityException {
-        useCase.createOrder(OrderBuilder.fromRequestToDomain(request), gateway);
+    @PostMapping(produces = "application/json", consumes = "application/json")
+    public ResponseEntity<CreatedOrderResponse> createOrder(@RequestBody CreateOrderRequest request) throws OrderCreationException, NoSuchEntityException {
+        final var result = useCase.createOrder(OrderBuilder.fromRequestToDomain(request), gateway);
+
+        return ResponseEntity.ok(OrderBuilder.fromDomainToCreatedResponse(result));
     }
 
     @ApiResponses(value = {
@@ -49,12 +52,12 @@ public class OrderController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
     })
-    @GetMapping(produces="application/json", consumes="application/json")
+    @GetMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<List<GetOrderResponse>> getOrders() {
         final var result = useCase.listOrder(gateway);
 
         return ResponseEntity.ok(result.stream()
-                .map(OrderBuilder::fromDomainToResponse)
+                .map(OrderBuilder::fromDomainToGetResponse)
                 .collect(Collectors.toList()));
     }
 
@@ -64,7 +67,7 @@ public class OrderController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
     })
-    @GetMapping(value="/{orderId}/payment-status", produces="application/json", consumes="application/json")
+    @GetMapping(value = "/{orderId}/payment-status", produces = "application/json", consumes = "application/json")
     public ResponseEntity<GetOrderPaymentStatusResponse> getOrderPaymentStatus(@PathVariable String orderId) throws EntityNotFoundException {
         return ResponseEntity.ok(GetOrderPaymentStatusResponse.builder()
                 .paymentStatus(useCase.getOrderById(orderId, gateway).getPaymentStatus())

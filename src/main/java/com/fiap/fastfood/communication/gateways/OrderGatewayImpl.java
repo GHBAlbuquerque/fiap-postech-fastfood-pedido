@@ -6,9 +6,12 @@ import com.fiap.fastfood.common.interfaces.datasources.OrderRepository;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.core.entity.Order;
 import com.fiap.fastfood.core.entity.OrderStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderGatewayImpl implements OrderGateway {
@@ -34,9 +37,19 @@ public class OrderGatewayImpl implements OrderGateway {
 
     @Override
     public List<Order> listOrder() {
-        return null;
-//        return repository.findAll(Sort.by(Sort.Direction.ASC, "createdAt")).stream()
-//                .filter(order -> order.getStatus() != OrderStatus.COMPLETED)
+        return repository.findAll()
+                .stream()
+                .filter(
+                        order -> OrderStatus.valueOf(order.getStatus()) != OrderStatus.COMPLETED
+                )
+                .map(OrderBuilder::fromOrmToDomain)
+                .sorted(Comparator.comparing(order -> getOrderStatusPriority(order.getStatus())))
+                .collect(Collectors.toList());
+
+//        return repository.findAllByOrderByCreatedAt().stream()
+//                .filter(
+//                        order -> OrderStatus.valueOf(order.getStatus()) != OrderStatus.COMPLETED
+//                )
 //                .map(OrderBuilder::fromOrmToDomain)
 //                .sorted(Comparator.comparing(order -> getOrderStatusPriority(order.getStatus())))
 //                .collect(Collectors.toList());
