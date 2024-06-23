@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateOrderRequest {
-    private Long customerId;
-    private List<OrderItemRequest> items;
+public class OrderItemRequest {
+    private String productId;
+    private Integer quantity;
+    private BigDecimal itemValue;
 }

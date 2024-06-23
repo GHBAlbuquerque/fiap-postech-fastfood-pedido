@@ -26,7 +26,6 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation group: 'com.github.derjust', name: 'spring-data-dynamodb', version: '5.1.0'
-//	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation group: 'org.springframework.data', name: 'spring-data-commons', version: '3.3.1'
 	implementation 'org.apache.logging.log4j:log4j-core'
 	implementation 'org.apache.logging.log4j:log4j-api'
@@ -35,7 +34,9 @@ dependencies {
 	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.2.0'
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.720'
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk-core', version: '1.12.720'
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.12.745'
+	implementation (group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.12.745') {
+			exclude group: 'commons-logging', module: 'commons-logging'
+		}
 	implementation group: 'software.amazon.awssdk', name: 'dynamodb', version: '2.26.5'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'

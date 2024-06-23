@@ -16,7 +16,7 @@ import java.util.List;
 public class Order {
 
     private String id;
-    private String clientId;
+    private Long customerId;
     private List<Item> items;
     private BigDecimal totalValue;
     private LocalDateTime createdAt;

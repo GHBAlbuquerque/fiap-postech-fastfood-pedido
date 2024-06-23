@@ -1,6 +1,7 @@
 package com.fiap.fastfood.external.orm;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBDocument;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
 import lombok.AllArgsConstructor;
@@ -14,18 +15,12 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@DynamoDBTable(tableName = "Item")
+@DynamoDBDocument
 public class ItemORM {
 
-    private String orderId;
     private String productId;
     private Integer quantity;
     private BigDecimal itemValue;
-
-    @DynamoDBHashKey
-    public String getOrderId() {
-        return orderId;
-    }
 
     @DynamoDBAttribute
     public String getProductId() {
@@ -42,7 +37,4 @@ public class ItemORM {
         return itemValue;
     }
 
-    public BigDecimal getTotalItemValue() {
-        return itemValue.multiply(BigDecimal.valueOf(quantity));
-    }
 }

@@ -3,6 +3,8 @@ package com.fiap.fastfood.common.builders;
 import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
 import com.fiap.fastfood.common.dto.response.GetOrderResponse;
 import com.fiap.fastfood.core.entity.Order;
+import com.fiap.fastfood.core.entity.OrderPaymentStatus;
+import com.fiap.fastfood.core.entity.OrderStatus;
 import com.fiap.fastfood.external.orm.OrderORM;
 
 import java.util.stream.Collectors;
@@ -23,7 +25,13 @@ public class OrderBuilder {
 
     public static Order fromRequestToDomain(CreateOrderRequest request) {
         return Order.builder()
-                .items(request.getItems())
+                .customerId(request.getCustomerId())
+                .items(
+                        request.getItems()
+                                .stream()
+                                .map(ItemBuilder::fromRequestToDomain)
+                                .toList()
+                )
                 .build();
     }
 
@@ -33,11 +41,11 @@ public class OrderBuilder {
                 .createdAt(orm.getCreatedAt())
                 .updatedAt(orm.getUpdatedAt())
                 .totalValue(orm.getTotalValue())
-                .status(orm.getStatus())
-                .paymentStatus(orm.getPaymentStatus())
-//                .items(
-//                        orm.getItems().stream().map(ItemBuilder::fromOrmToDomain).collect(Collectors.toList())
-//                ) //TODO
+                .status(OrderStatus.valueOf(orm.getStatus()))
+                .paymentStatus(OrderPaymentStatus.valueOf(orm.getPaymentStatus()))
+                .items(
+                        orm.getItems().stream().map(ItemBuilder::fromOrmToDomain).collect(Collectors.toList())
+                )
                 .build();
     }
 
@@ -47,11 +55,11 @@ public class OrderBuilder {
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .totalValue(order.getTotalValue())
-                .status(order.getStatus())
-                .paymentStatus(order.getPaymentStatus())
-//                .items(
-//                        order.getItems().stream().map(ItemBuilder::fromDomainToOrm).collect(Collectors.toList())
-//                ) //TODO
+                .status(order.getStatus().toString())
+                .paymentStatus(order.getPaymentStatus().toString())
+                .items(
+                        order.getItems().stream().map(ItemBuilder::fromDomainToOrm).collect(Collectors.toList())
+                )
                 .build();
     }
 }

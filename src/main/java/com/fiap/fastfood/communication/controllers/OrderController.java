@@ -2,9 +2,11 @@ package com.fiap.fastfood.communication.controllers;
 
 import com.fiap.fastfood.common.builders.OrderBuilder;
 import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
-import com.fiap.fastfood.common.dto.response.GetOrderResponse;
 import com.fiap.fastfood.common.dto.response.GetOrderPaymentStatusResponse;
+import com.fiap.fastfood.common.dto.response.GetOrderResponse;
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
+import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
+import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.exceptions.model.ExceptionDetails;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
@@ -37,7 +39,7 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
     })
     @PostMapping(produces="application/json", consumes="application/json")
-    public void createOrder(@RequestBody CreateOrderRequest request) {
+    public void createOrder(@RequestBody CreateOrderRequest request) throws OrderCreationException, NoSuchEntityException {
         useCase.createOrder(OrderBuilder.fromRequestToDomain(request), gateway);
     }
 

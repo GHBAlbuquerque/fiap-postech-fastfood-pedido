@@ -1,6 +1,8 @@
 package com.fiap.fastfood.core.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
+import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
+import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
 import com.fiap.fastfood.core.entity.Order;
@@ -12,10 +14,22 @@ import java.util.List;
 public class OrderUseCaseImpl implements OrderUseCase {
 
     @Override
-    public void createOrder(Order order, OrderGateway orderGateway) {
-        order.setStatus(OrderStatus.RECEIVED);
-        order.setPaymentStatus(OrderPaymentStatus.PENDING);
-        orderGateway.saveOrder(order);
+    public void createOrder(Order order, OrderGateway orderGateway) throws OrderCreationException {
+
+        try {
+            validateOrderCustomer(order.getCustomerId());
+
+            order.setTotalValue(order.getTotalValue());
+            order.setStatus(OrderStatus.RECEIVED);
+            order.setPaymentStatus(OrderPaymentStatus.PENDING);
+            orderGateway.saveOrder(order);
+
+        } catch (Exception ex) {
+            throw new OrderCreationException(
+                    "ORDER-01",
+                    String.format("Couldn't create order. Error: %s", ex.getMessage())
+            );
+        }
     }
 
     @Override
@@ -27,4 +41,15 @@ public class OrderUseCaseImpl implements OrderUseCase {
     public Order getOrderById(String id, OrderGateway orderGateway) throws EntityNotFoundException {
         return orderGateway.getOrderById(id);
     }
+
+    @Override
+    public Boolean validateOrderCustomer(Long customerId) throws NoSuchEntityException {
+        return Boolean.TRUE;
+
+        /*TODO: implementar a verificação de cliente via CustomerGateway com feign
+        NoSuchEntityException(code: 0): The product that was requested doesn't exist. Verify the product and try again.
+         */
+    }
+
+
 }
