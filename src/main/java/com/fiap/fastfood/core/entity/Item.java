@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 public class Item {
 
     private String productId;
-    private String productName;
+    private String productType;
     private Integer quantity;
     private BigDecimal itemValue;
 

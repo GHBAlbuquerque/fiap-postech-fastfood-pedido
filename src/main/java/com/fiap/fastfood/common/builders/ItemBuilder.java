@@ -9,6 +9,7 @@ public class ItemBuilder {
     public static Item fromOrmToDomain(ItemORM orm) {
         return new Item()
                 .setProductId(orm.getProductId())
+                .setProductType(orm.getProductType())
                 .setItemValue(orm.getItemValue())
                 .setQuantity(orm.getQuantity());
     }
@@ -16,6 +17,7 @@ public class ItemBuilder {
     public static ItemORM fromDomainToOrm(Item item) {
         return new ItemORM()
                 .setProductId(item.getProductId())
+                .setProductType(item.getProductType())
                 .setItemValue(item.getItemValue())
                 .setQuantity(item.getQuantity());
     }
@@ -23,6 +25,7 @@ public class ItemBuilder {
     public static Item fromRequestToDomain(OrderItemRequest request) {
         return new Item()
                 .setProductId(request.getProductId())
+                .setProductType(request.getProductType())
                 .setQuantity(request.getQuantity())
                 .setItemValue(request.getProductValue());
 

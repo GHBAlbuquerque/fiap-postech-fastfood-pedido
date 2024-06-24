@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 public class ItemORM {
 
     private String productId;
-    private String productName;
+    private String productType;
     private Integer quantity;
     private BigDecimal itemValue;
 
@@ -29,8 +29,8 @@ public class ItemORM {
     }
 
     @DynamoDBAttribute
-    public String getProductName() {
-        return productName;
+    public String getProductType() {
+        return productType;
     }
 
     @DynamoDBAttribute
