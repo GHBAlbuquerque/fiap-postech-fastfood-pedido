@@ -1,9 +1,7 @@
 package com.fiap.fastfood.common.builders;
 
-import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
 import com.fiap.fastfood.common.dto.request.OrderItemRequest;
 import com.fiap.fastfood.core.entity.Item;
-import com.fiap.fastfood.core.entity.Order;
 import com.fiap.fastfood.external.orm.ItemORM;
 
 public class ItemBuilder {
@@ -26,7 +24,7 @@ public class ItemBuilder {
         return new Item()
                 .setProductId(request.getProductId())
                 .setQuantity(request.getQuantity())
-                .setItemValue(request.getItemValue());
+                .setItemValue(request.getProductValue());
 
     }
 }

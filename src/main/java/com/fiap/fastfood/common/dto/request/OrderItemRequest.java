@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class OrderItemRequest {
     private String productId;
+    private String productName;
     private Integer quantity;
-    private BigDecimal itemValue;
+    private BigDecimal productValue;
 }
