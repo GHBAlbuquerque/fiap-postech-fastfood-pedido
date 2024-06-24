@@ -16,7 +16,7 @@ public interface ProductHTTPClient {
     @GetMapping(value = "/products/{id}") //TODO conferir path
     ResponseEntity<GetProductResponse> getProductByIdAndName(
             @PathVariable("id") final String productId,
-            @RequestParam("name") final String productName,
+            @RequestParam("type") final String type,
             @RequestHeader("cpf_cliente") final String cpfCliente,
             @RequestHeader("senha_cliente") final String senhaCliente,
             @RequestHeader("Content-Type") final String contentType

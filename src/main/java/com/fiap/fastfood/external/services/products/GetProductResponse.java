@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class GetProductResponse {
 
+    String id;
     String name;
     BigDecimal price;
     String description;
