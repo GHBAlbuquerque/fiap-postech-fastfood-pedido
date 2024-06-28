@@ -95,12 +95,12 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
 
-      - name: Install Helm
-        run: |
-          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx 
-          helm repo update 
-          helm repo list 
-          helm upgrade -i ingress-nginx ingress-nginx
+#      - name: Install Helm
+#        run: |
+#          helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+#          helm repo update
+#          helm repo list
+#          helm upgrade -i ingress-nginx ingress-nginx
 
       - name: Deploy to EKS
         env:
