@@ -1,16 +1,9 @@
 package com.fiap.fastfood.common.interfaces.gateways;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
-import com.fiap.fastfood.core.entity.Order;
-
-import java.util.List;
+import com.fiap.fastfood.core.entity.Customer;
 
 public interface CustomerGateway {
 
-    List<Order> listOrder();
-
-    void saveOrder(Order order);
-
-    Order getOrderById(String id) throws EntityNotFoundException;
-
+    Customer getCustomerByCpf(String cpf) throws EntityNotFoundException;
 }

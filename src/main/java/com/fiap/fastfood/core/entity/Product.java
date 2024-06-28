@@ -1,15 +1,16 @@
 package com.fiap.fastfood.core.entity;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Accessors(chain = true)
 public class Product {
 
     String id;

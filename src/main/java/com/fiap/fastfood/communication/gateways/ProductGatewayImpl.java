@@ -1,5 +1,6 @@
 package com.fiap.fastfood.communication.gateways;
 
+import com.fiap.fastfood.common.builders.ProductBuilder;
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.core.entity.Product;
@@ -11,19 +12,20 @@ public class ProductGatewayImpl implements ProductGateway {
     @Autowired
     private ProductHTTPClient productHTTPClient;
 
+    private static final String CONTENT_TYPE = "application/json";
 
-    @Override //TODO implementar
+    @Override
     public Product getProductByIdAndType(String id, String type) throws EntityNotFoundException {
-        final var result = productHTTPClient.getProductByIdAndName(id,
-                type,
-                "",
-                "",
-                "application/json");
+        final var result = productHTTPClient.getProductByIdAndName(id, type, CONTENT_TYPE);
+        final var response = result.getBody();
 
-        if (result == null) {
-            throw new EntityNotFoundException("ORDER-03", String.format("Product with ID %s on Order Item not found", id));
+        if (response == null) {
+            throw new EntityNotFoundException(
+                    "ORDER-03",
+                    String.format("Product with ID %s on Order Item not found", id)
+            );
         }
 
-        return null;
+        return ProductBuilder.fromResponseToDomain(response);
     }
 }
