@@ -1,0 +1,35 @@
+********************************************
+  ***CONFIGURAÇÃO DO INGRESS PRO ROTEAMENTO***
+  ********************************************
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-microservices
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /mscliente
+            pathType: Prefix
+            backend:
+              service:
+                name: fiap-postech-service-cliente
+                port:
+                  number: 80
+          - path: /msproduto
+            pathType: Prefix
+            backend:
+              service:
+                name: fiap-postech-service-produto
+                port:
+                  number: 80
+          - path: /mspedido
+            pathType: Prefix
+            backend:
+              service:
+                name: fiap-postech-service-pedido
+                port:
+                  number: 80
