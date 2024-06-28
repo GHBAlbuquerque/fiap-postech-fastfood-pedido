@@ -9,7 +9,9 @@ import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.exceptions.model.ExceptionDetails;
+import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
+import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,12 +27,17 @@ import java.util.stream.Collectors;
 @RequestMapping("/orders")
 public class OrderController {
 
-    private final OrderGateway gateway;
     private final OrderUseCase useCase;
+    private final OrderGateway gateway;
+    private final ProductGateway productGateway;
+    private final CustomerGateway customerGateway;
 
-    public OrderController(OrderGateway orderGateway, OrderUseCase orderUseCase) {
+
+    public OrderController(OrderGateway orderGateway, OrderUseCase orderUseCase, ProductGateway productGateway, CustomerGateway customerGateway) {
         this.gateway = orderGateway;
         this.useCase = orderUseCase;
+        this.productGateway = productGateway;
+        this.customerGateway = customerGateway;
     }
 
     @ApiResponses(value = {
@@ -41,7 +48,11 @@ public class OrderController {
     })
     @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<CreatedOrderResponse> createOrder(@RequestBody CreateOrderRequest request) throws OrderCreationException, NoSuchEntityException {
-        final var result = useCase.createOrder(OrderBuilder.fromRequestToDomain(request), gateway);
+        final var result = useCase.createOrder(
+                OrderBuilder.fromRequestToDomain(request),
+                gateway,
+                productGateway,
+                customerGateway);
 
         return ResponseEntity.ok(OrderBuilder.fromDomainToCreatedResponse(result));
     }

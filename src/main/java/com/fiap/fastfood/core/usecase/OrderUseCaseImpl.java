@@ -3,8 +3,11 @@ package com.fiap.fastfood.core.usecase;
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
+import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
+import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
+import com.fiap.fastfood.core.entity.Item;
 import com.fiap.fastfood.core.entity.Order;
 import com.fiap.fastfood.core.entity.OrderPaymentStatus;
 import com.fiap.fastfood.core.entity.OrderStatus;
@@ -14,10 +17,15 @@ import java.util.List;
 public class OrderUseCaseImpl implements OrderUseCase {
 
     @Override
-    public Order createOrder(Order order, OrderGateway orderGateway) throws OrderCreationException {
+    public Order createOrder(Order order,
+                             OrderGateway orderGateway,
+                             ProductGateway productGateway,
+                             CustomerGateway customerGateway)
+            throws OrderCreationException {
 
         try {
-            validateOrderCustomer(order.getCustomerId());
+            validateOrderCustomer(order.getCustomerId(), customerGateway);
+            validateOrderItens(order.getItems(), productGateway);
 
             order.setTotalValue(order.getTotalValue());
             order.setStatus(OrderStatus.RECEIVED);
@@ -45,12 +53,18 @@ public class OrderUseCaseImpl implements OrderUseCase {
     }
 
     @Override
-    public Boolean validateOrderCustomer(Long customerId) throws NoSuchEntityException {
-        return Boolean.TRUE;
+    public void validateOrderCustomer(Long customerId, CustomerGateway customerGateway) throws EntityNotFoundException {
+        customerGateway.getCustomerById(customerId);
+    }
 
-        /*TODO: implementar a verificação de cliente via CustomerGateway com feign
-        NoSuchEntityException(code: 0): The product that was requested doesn't exist. Verify the product and try again.
-         */
+    @Override
+    public void validateOrderItens(List<Item> items, ProductGateway productGateway) throws EntityNotFoundException {
+        for (Item item : items) {
+            productGateway.getProductByIdAndType(
+                    item.getProductId(),
+                    item.getProductType()
+            );
+        }
     }
 
 

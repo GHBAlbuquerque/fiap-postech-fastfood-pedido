@@ -5,14 +5,16 @@ import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.core.entity.Product;
 import com.fiap.fastfood.external.services.products.ProductHTTPClient;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProductGatewayImpl implements ProductGateway {
 
-    @Autowired
     private ProductHTTPClient productHTTPClient;
 
     private static final String CONTENT_TYPE = "application/json";
+
+    public ProductGatewayImpl(ProductHTTPClient productHTTPClient) {
+        this.productHTTPClient = productHTTPClient;
+    }
 
     @Override
     public Product getProductByIdAndType(String id, String type) throws EntityNotFoundException {

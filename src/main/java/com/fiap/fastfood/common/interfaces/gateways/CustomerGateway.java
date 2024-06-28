@@ -5,5 +5,5 @@ import com.fiap.fastfood.core.entity.Customer;
 
 public interface CustomerGateway {
 
-    Customer getCustomerByCpf(String cpf) throws EntityNotFoundException;
+    Customer getCustomerById(Long id) throws EntityNotFoundException;
 }

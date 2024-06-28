@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.info.Info;
 import org.socialsignin.spring.data.dynamodb.repository.config.EnableDynamoDBRepositories;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
+@EnableFeignClients
 @SpringBootApplication
 @EnableDynamoDBRepositories(basePackages = "com.fiap.fastfood.common.interfaces.datasources")
 @OpenAPIDefinition(info = @Info(title = "Fast Food FIAP", description = "Microsserviço de gerenciamento de Pedidos realizado para a Pós-Graduação de Arquitetura de Sistemas da FIAP", version = "v1"))

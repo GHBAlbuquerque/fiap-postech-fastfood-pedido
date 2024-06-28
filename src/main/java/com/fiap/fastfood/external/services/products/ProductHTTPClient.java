@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
-        name = "fiap_postech_fastfood_ms_produto",
+        name = "msproduto",
         url = "${fiap.postech.fastfood.msproduto.url}"
 )
 public interface ProductHTTPClient {

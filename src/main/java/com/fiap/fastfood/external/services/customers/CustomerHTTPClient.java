@@ -3,16 +3,27 @@ package com.fiap.fastfood.external.services.customers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
-        name = "fiap_postech_fastfood_ms_cliente",
+        name = "mscliente",
         url = "${fiap.postech.fastfood.mscliente.url}"
 )
 public interface CustomerHTTPClient {
 
-    @GetMapping(value = "/customers") //TODO conferir path
+    @GetMapping(value = "/customers/{id}")
+        //TODO conferir path
+    ResponseEntity<GetCustomerResponse> getCustomerById(
+            @PathVariable("id") final Long customerId,
+            //@RequestHeader("cpf_cliente") final String cpfCliente,
+            //@RequestHeader("senha_cliente") final String senhaCliente,
+            @RequestHeader("Content-Type") final String contentType
+    );
+
+    @GetMapping(value = "/customers")
+        //TODO conferir path
     ResponseEntity<GetCustomerResponse> getCustomerByCpf(
             @RequestParam("cpf") final String customerCpf,
             //@RequestHeader("cpf_cliente") final String cpfCliente,
