@@ -24,9 +24,6 @@ spec:
             limits:
               cpu: "500m"  # Limite de CPU
               memory: "1Gi"
-          env:
-            - name: DB_HOST
-              value: "db_host"
           ports:
             - containerPort: 80
               protocol: TCP
@@ -41,7 +38,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
+      targetPort: 8080
 
 
 

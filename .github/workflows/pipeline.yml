@@ -102,6 +102,11 @@ jobs:
 #          helm repo list
 #          helm upgrade -i ingress-nginx ingress-nginx
 
+#      - name: Install Helm
+#        run: |
+#          helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+#          helm upgrade -i ingress-nginx stable/nginx-ingress
+
       - name: Deploy to EKS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
