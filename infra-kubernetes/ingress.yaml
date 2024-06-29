@@ -19,18 +19,24 @@ spec:
   rules:
     - http:
         paths:
-          - path: /mscliente/*
+          - path: /mscliente
             pathType: Prefix
             backend:
-                serviceName: fiap-postech-service-cliente
-                servicePort: 80
-          - path: /msproduto/*
+              service:
+                name: fiap-postech-service-cliente
+                port:
+                  number: 80
+          - path: /msproduto
             pathType: Prefix
             backend:
-                serviceName: fiap-postech-service-produto
-                servicePort: 80
-          - path: /mspedido/*
+              service:
+                name: fiap-postech-service-produto
+                port:
+                  number: 80
+          - path: /mspedido
             pathType: Prefix
             backend:
-                serviceName: fiap-postech-service-pedido
-                servicePort: 80
+              service:
+                name: fiap-postech-service-pedido
+                port:
+                  number: 80
