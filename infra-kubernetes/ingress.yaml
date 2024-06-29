@@ -3,29 +3,34 @@ kind: Ingress
 metadata:
   name: ingress-microservices
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    # Ingress Core Settings
+    kubernetes.io/ingress.class: "alb"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Health Check Settings
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/healthcheck-path: /msproduto/actuator/health
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '30'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '10'
+    alb.ingress.kubernetes.io/success-codes: '200'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '3'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '3'
 spec:
   rules:
     - http:
         paths:
-          - path: /mscliente
+          - path: /mscliente/*
             pathType: Prefix
             backend:
-              service:
-                name: fiap-postech-service-cliente
-                port:
-                  number: 80
-          - path: /msproduto
+                serviceName: fiap-postech-service-cliente
+                servicePort: 80
+          - path: /msproduto/*
             pathType: Prefix
             backend:
-              service:
-                name: fiap-postech-service-produto
-                port:
-                  number: 80
-          - path: /mspedido
+                serviceName: fiap-postech-service-produto
+                servicePort: 80
+          - path: /mspedido/*
             pathType: Prefix
             backend:
-              service:
-                name: fiap-postech-service-pedido
-                port:
-                  number: 80
+                serviceName: fiap-postech-service-pedido
+                servicePort: 80
