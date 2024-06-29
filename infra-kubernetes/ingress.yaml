@@ -4,7 +4,6 @@ metadata:
   name: ingress-microservices-alb
   annotations:
     # Ingress Core Settings
-    kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     # Health Check Settings
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
@@ -16,6 +15,7 @@ metadata:
     alb.ingress.kubernetes.io/healthy-threshold-count: '3'
     alb.ingress.kubernetes.io/unhealthy-threshold-count: '3'
 spec:
+  ingressClassName: alb
   rules:
     - http:
         paths:
