@@ -117,4 +117,3 @@ jobs:
           kubectl apply -f infra-kubernetes/ingress.yaml
           kubectl get ingress
           kubectl describe ingress ingress-microservices-alb
-          kubectl logs -f $(kubectl get po -n kube-system | egrep -o 'alb-ingress-controller-[A-Za-z0-9-]+') -n kube-system
