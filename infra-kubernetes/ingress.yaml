@@ -6,7 +6,6 @@ metadata:
     # Ingress Core Settings
     alb.ingress.kubernetes.io/load-balancer-name: fiap-postech-alb-ingress
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/subnets: subnet-01397f0c989a8eec6,subnet-04ecfb1a724b6ff1f
     # Health Check Settings
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
