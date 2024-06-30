@@ -2,6 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-microservices-alb
+  namespace: kube-system
   annotations:
     # Ingress Core Settings
     alb.ingress.kubernetes.io/load-balancer-name: fiap-postech-alb-ingress
