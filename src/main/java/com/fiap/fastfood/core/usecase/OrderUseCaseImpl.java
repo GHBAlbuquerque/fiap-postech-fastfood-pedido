@@ -7,11 +7,9 @@ import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
-import com.fiap.fastfood.core.entity.Item;
-import com.fiap.fastfood.core.entity.Order;
-import com.fiap.fastfood.core.entity.OrderPaymentStatus;
-import com.fiap.fastfood.core.entity.OrderStatus;
+import com.fiap.fastfood.core.entity.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderUseCaseImpl implements OrderUseCase {
@@ -58,13 +56,24 @@ public class OrderUseCaseImpl implements OrderUseCase {
     }
 
     @Override
-    public void validateOrderItens(List<Item> items, ProductGateway productGateway) throws EntityNotFoundException {
+    public void validateOrderItens(List<Item> items, ProductGateway productGateway) throws EntityNotFoundException, OrderCreationException {
         for (Item item : items) {
-            productGateway.getProductByIdAndType(
+            var product = productGateway.getProductByIdAndType(
                     item.getProductId(),
-                    item.getProductType()
+                    item.getProductType());
+
+            var result = productGateway.validateProductValue(
+                    item.getItemValue(),
+                    product
             );
+
+            if (!result)
+                throw new OrderCreationException(
+                        "ORDER-05",
+                        String.format("Item price does not match product price.")
+                );
         }
+
     }
 
 

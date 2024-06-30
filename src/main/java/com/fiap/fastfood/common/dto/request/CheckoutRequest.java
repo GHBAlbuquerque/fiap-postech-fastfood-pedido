@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -11,5 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CheckoutRequest {
 
+    @NotBlank
     String orderId;
 }

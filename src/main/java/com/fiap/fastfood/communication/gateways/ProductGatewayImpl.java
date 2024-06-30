@@ -6,6 +6,8 @@ import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.core.entity.Product;
 import com.fiap.fastfood.external.services.products.ProductHTTPClient;
 
+import java.math.BigDecimal;
+
 public class ProductGatewayImpl implements ProductGateway {
 
     private ProductHTTPClient productHTTPClient;
@@ -29,5 +31,10 @@ public class ProductGatewayImpl implements ProductGateway {
         }
 
         return ProductBuilder.fromResponseToDomain(response);
+    }
+
+    @Override
+    public Boolean validateProductValue(BigDecimal value, Product product) {
+        return value.equals(product.getPrice());
     }
 }

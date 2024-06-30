@@ -24,6 +24,6 @@ public interface OrderUseCase {
 
     void validateOrderCustomer(Long customerId, CustomerGateway customerGateway) throws EntityNotFoundException;
 
-    void validateOrderItens(List<Item> items, ProductGateway productGateway) throws EntityNotFoundException;
+    void validateOrderItens(List<Item> items, ProductGateway productGateway) throws EntityNotFoundException, OrderCreationException;
 
 }

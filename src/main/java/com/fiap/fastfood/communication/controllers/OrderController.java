@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,7 +48,9 @@ public class OrderController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
     })
     @PostMapping(produces = "application/json", consumes = "application/json")
-    public ResponseEntity<CreatedOrderResponse> createOrder(@RequestBody CreateOrderRequest request) throws OrderCreationException, NoSuchEntityException {
+    public ResponseEntity<CreatedOrderResponse> createOrder(
+            @Valid @RequestBody CreateOrderRequest request)
+            throws OrderCreationException, NoSuchEntityException {
         final var result = useCase.createOrder(
                 OrderBuilder.fromRequestToDomain(request),
                 gateway,

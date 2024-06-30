@@ -11,6 +11,7 @@ public class ProductBuilder {
                 .setName(response.getDescription())
                 .setDescription(response.getDescription())
                 .setType(response.getType())
+                .setPrice(response.getPrice())
                 .setCreatedAt(response.getCreatedAt())
                 .setUpdatedAt(response.getUpdatedAt());
     }
