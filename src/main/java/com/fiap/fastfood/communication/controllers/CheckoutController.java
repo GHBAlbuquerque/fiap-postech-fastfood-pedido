@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,10 +38,16 @@ public class CheckoutController {
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
     })
     @PostMapping(produces = "application/json", consumes = "application/json")
-    public void checkout(@RequestBody @Valid CheckoutRequest request) {
+    public ResponseEntity<CheckoutResponse> checkout(@RequestBody @Valid CheckoutRequest request) {
         final var checkoutReq = CheckoutBuilder.fromRequestToDomain(request);
 
-        useCase.submit(checkoutReq, gateway);
+        final var result = useCase.submit(checkoutReq, gateway);
+
+        return ResponseEntity
+                .created(URI.create(result.getId()))
+                .body(
+                        CheckoutBuilder.fromDomainToResponse(result)
+                );
     }
 
     @ApiResponses(value = {

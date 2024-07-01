@@ -20,9 +20,11 @@ public class CheckoutGatewayImpl implements CheckoutGateway {
     }
 
     @Override
-    public void save(Checkout checkout) {
+    public Checkout save(Checkout checkout) {
         final var orm = CheckoutBuilder.fromDomainToOrm(checkout);
-        checkoutRepository.save(orm);
+        final var result = checkoutRepository.save(orm);
+
+        return CheckoutBuilder.fromOrmToDomain(result);
     }
 
     @Override
