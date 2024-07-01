@@ -51,15 +51,9 @@ public class OrderBuilder {
     }
 
     public static Order fromOrmToDomain(OrderORM orm) {
-        return Order.builder()
+        final var order = Order.builder()
                 .id(orm.getId())
                 .customerId(orm.getCustomerId())
-                .createdAt(
-                        TimeConverter.convertToLocalDateTimeViaInstant(orm.getCreatedAt())
-                )
-                .updatedAt(
-                        TimeConverter.convertToLocalDateTimeViaInstant(orm.getUpdatedAt())
-                )
                 .totalValue(orm.getTotalValue())
                 .status(OrderStatus.valueOf(orm.getStatus()))
                 .paymentStatus(OrderPaymentStatus.valueOf(orm.getPaymentStatus()))
@@ -67,6 +61,16 @@ public class OrderBuilder {
                         orm.getItems().stream().map(ItemBuilder::fromOrmToDomain).collect(Collectors.toList())
                 )
                 .build();
+
+
+        if (orm.getCreatedAt() != null)
+            order.setCreatedAt(TimeConverter.convertToLocalDateTimeViaInstant(orm.getCreatedAt()));
+
+        if (orm.getUpdatedAt() != null)
+            order.setUpdatedAt(TimeConverter.convertToLocalDateTimeViaInstant(orm.getUpdatedAt()));
+
+        return order;
+
     }
 
     public static OrderORM fromDomainToOrm(Order order) {

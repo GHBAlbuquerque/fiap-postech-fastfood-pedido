@@ -45,26 +45,14 @@ public class OrderGatewayImpl implements OrderGateway {
                 .map(OrderBuilder::fromOrmToDomain)
                 .sorted(Comparator.comparing(order -> getOrderStatusPriority(order.getStatus())))
                 .collect(Collectors.toList());
-
-//        return repository.findAllByOrderByCreatedAt().stream()
-//                .filter(
-//                        order -> OrderStatus.valueOf(order.getStatus()) != OrderStatus.COMPLETED
-//                )
-//                .map(OrderBuilder::fromOrmToDomain)
-//                .sorted(Comparator.comparing(order -> getOrderStatusPriority(order.getStatus())))
-//                .collect(Collectors.toList());
     }
 
     private int getOrderStatusPriority(OrderStatus status) {
-        switch (status) {
-            case READY:
-                return 1;
-            case IN_PREPARATION:
-                return 2;
-            case RECEIVED:
-                return 3;
-            default:
-                return 0;
-        }
+        return switch (status) {
+            case READY -> 1;
+            case IN_PREPARATION -> 2;
+            case RECEIVED -> 3;
+            default -> 0;
+        };
     }
 }
