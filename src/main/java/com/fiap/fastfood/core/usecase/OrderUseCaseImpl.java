@@ -28,9 +28,8 @@ public class OrderUseCaseImpl implements OrderUseCase {
             order.setTotalValue(order.getTotalValue());
             order.setStatus(OrderStatus.RECEIVED);
             order.setPaymentStatus(OrderPaymentStatus.PENDING);
-            orderGateway.saveOrder(order);
 
-            return order;
+            return orderGateway.saveOrder(order);
 
         } catch (Exception ex) {
             throw new OrderCreationException(
