@@ -2,7 +2,6 @@ package com.fiap.fastfood.core.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
-import com.fiap.fastfood.common.interfaces.gateways.CheckoutGateway;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Or;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -63,9 +61,6 @@ public class OrderUseCaseImplTest {
         final var orderMock = createOrder();
         final var productMock = Mockito.mock(Product.class);
 
-        Mockito.when(gatewayMock.saveOrder(orderMock))
-                .thenReturn(orderMock);
-
         Mockito.when(productGatewayMock.getProductByIdAndType(anyString(), anyString()))
                 .thenReturn(productMock);
 
@@ -83,12 +78,30 @@ public class OrderUseCaseImplTest {
 
     @Test
     void listOrderTest() {
+        final var gatewayMock = Mockito.mock(OrderGateway.class);
+        final var orderMock = createOrder();
 
+
+        Mockito.when(gatewayMock.listOrder())
+                .thenReturn(List.of(orderMock));
+
+        final var result = orderUseCase.listOrder(gatewayMock);
+
+        Assertions.assertFalse(result.isEmpty());
     }
 
     @Test
-    void getOrderByIdTest() {
+    void getOrderByIdTest() throws EntityNotFoundException {
+        final var gatewayMock = Mockito.mock(OrderGateway.class);
+        final var orderMock = createOrder();
 
+
+        Mockito.when(gatewayMock.getOrderById(orderMock.getId()))
+                .thenReturn(orderMock);
+
+        final var result = orderUseCase.getOrderById(orderMock.getId(), gatewayMock);
+
+        Assertions.assertNotNull(result);
     }
 
 
