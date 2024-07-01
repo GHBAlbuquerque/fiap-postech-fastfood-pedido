@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface ProductHTTPClient {
 
     @GetMapping(value = "/products/{id}") //TODO conferir path
-    ResponseEntity<GetProductResponse> getProductByIdAndName(
+    ResponseEntity<GetProductResponse> getProductByIdAndType(
             @PathVariable("id") final String productId,
             @RequestParam("type") final String type,
             //@RequestHeader("cpf_cliente") final String cpfCliente,

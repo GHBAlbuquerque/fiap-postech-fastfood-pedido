@@ -20,7 +20,7 @@ public class ProductGatewayImpl implements ProductGateway {
 
     @Override
     public Product getProductByIdAndType(String id, String type) throws EntityNotFoundException {
-        final var result = productHTTPClient.getProductByIdAndName(id, type, CONTENT_TYPE);
+        final var result = productHTTPClient.getProductByIdAndType(id, type, CONTENT_TYPE);
         final var response = result.getBody();
 
         if (response == null) {
