@@ -16,15 +16,19 @@ public class CheckoutBuilder {
     }
 
     public static CheckoutResponse fromDomainToResponse(Checkout checkout) {
+        if (checkout == null) return null;
+
         return CheckoutResponse.builder()
                 .id(checkout.getId())
                 .status(checkout.getStatus())
                 .orderId(checkout.getOrderId())
-                .createAt(checkout.getCreatedAt())
+                .createdAt(checkout.getCreatedAt())
                 .build();
     }
 
     public static Checkout fromOrmToDomain(CheckoutORM orm) {
+        if (orm == null) return null;
+
         return Checkout.builder()
                 .id(orm.getId())
                 .status(orm.getStatus())

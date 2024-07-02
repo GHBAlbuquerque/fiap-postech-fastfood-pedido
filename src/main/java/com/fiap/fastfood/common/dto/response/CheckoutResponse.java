@@ -11,5 +11,5 @@ public class CheckoutResponse {
     private String id;
     private String orderId;
     private String status;
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 }

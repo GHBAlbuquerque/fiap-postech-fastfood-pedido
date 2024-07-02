@@ -6,6 +6,7 @@ import com.fiap.fastfood.common.interfaces.gateways.CheckoutGateway;
 import com.fiap.fastfood.core.entity.Checkout;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,9 @@ public class CheckoutGatewayImpl implements CheckoutGateway {
 
     @Override
     public List<Checkout> findAll() {
-        final var orms = checkoutRepository.findAllByOrderIdOrderByCreatedAtAsc();
+        final var orms = checkoutRepository.findAll();
+
+        if (orms.isEmpty()) return new ArrayList<>();
 
         final var checkouts = orms.stream()
                 .map(CheckoutBuilder::fromOrmToDomain)
