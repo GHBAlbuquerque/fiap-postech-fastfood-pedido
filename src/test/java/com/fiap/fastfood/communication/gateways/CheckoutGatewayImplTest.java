@@ -41,7 +41,7 @@ public class CheckoutGatewayImplTest {
     void findAllTest() {
         final var checkoutORMMock = Mockito.mock(CheckoutORM.class);
 
-        Mockito.when(checkoutRepository.findAllByOrderIdOrderByCreatedAtAsc())
+        Mockito.when(checkoutRepository.findAll())
                 .thenReturn(List.of(checkoutORMMock));
 
         final var result = checkoutGateway.findAll();
