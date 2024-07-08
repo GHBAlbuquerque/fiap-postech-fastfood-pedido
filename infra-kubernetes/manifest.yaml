@@ -38,13 +38,14 @@ kind: Service
 metadata:
   name: fiap-postech-service-pedido
 spec:
-  type: ClusterIP
+  type: NodePort
   selector:
     app: fiap-postech-fastfood-pedido
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
+      nodePort: 30009
 
 
 
