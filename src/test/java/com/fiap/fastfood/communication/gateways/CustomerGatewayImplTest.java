@@ -30,7 +30,7 @@ public class CustomerGatewayImplTest {
         final var customerResponseMock = Mockito.mock(GetCustomerResponse.class);
         final var customerMock = Mockito.mock(Customer.class);
 
-        Mockito.when(customerHTTPClient.getCustomerById(anyLong(), anyString()))
+        Mockito.when(customerHTTPClient.getCustomerById(anyLong(), anyString(), anyString()))
                 .thenReturn(ResponseEntity.ok(customerResponseMock));
 
         Assertions.assertDoesNotThrow(
@@ -40,7 +40,7 @@ public class CustomerGatewayImplTest {
 
     @Test
     void getCustomerByIdErrorTest() {
-        Mockito.when(customerHTTPClient.getCustomerById(anyLong(), anyString()))
+        Mockito.when(customerHTTPClient.getCustomerById(anyLong(), anyString(), anyString()))
                 .thenReturn(ResponseEntity.ok(null));
 
         Assertions.assertThrows(

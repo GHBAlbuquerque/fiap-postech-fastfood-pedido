@@ -13,12 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 )
 public interface ProductHTTPClient {
 
-    @GetMapping(value = "/products/{id}") //TODO conferir path
+    @GetMapping(value = "/products/{id}")
     ResponseEntity<GetProductResponse> getProductByIdAndType(
             @PathVariable("id") final String productId,
             @RequestParam("type") final String type,
-            //@RequestHeader("cpf_cliente") final String cpfCliente,
-            //@RequestHeader("senha_cliente") final String senhaCliente,
+            @RequestHeader("microsservice") final String microsservico,
             @RequestHeader("Content-Type") final String contentType
     );
 }

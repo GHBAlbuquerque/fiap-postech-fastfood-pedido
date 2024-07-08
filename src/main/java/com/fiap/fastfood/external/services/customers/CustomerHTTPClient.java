@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface CustomerHTTPClient {
 
     @GetMapping(value = "/customers/{id}")
-        //TODO conferir path
     ResponseEntity<GetCustomerResponse> getCustomerById(
             @PathVariable("id") final Long customerId,
-            //@RequestHeader("cpf_cliente") final String cpfCliente,
-            //@RequestHeader("senha_cliente") final String senhaCliente,
+            @RequestHeader("microsservice") final String microsservico,
             @RequestHeader("Content-Type") final String contentType
     );
 
@@ -26,8 +24,7 @@ public interface CustomerHTTPClient {
         //TODO conferir path
     ResponseEntity<GetCustomerResponse> getCustomerByCpf(
             @RequestParam("cpf") final String customerCpf,
-            //@RequestHeader("cpf_cliente") final String cpfCliente,
-            //@RequestHeader("senha_cliente") final String senhaCliente,
+            @RequestHeader("microsservice") final String microsservico,
             @RequestHeader("Content-Type") final String contentType
     );
 }

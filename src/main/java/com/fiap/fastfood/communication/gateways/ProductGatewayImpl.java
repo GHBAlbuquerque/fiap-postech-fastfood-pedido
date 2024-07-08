@@ -13,6 +13,7 @@ public class ProductGatewayImpl implements ProductGateway {
     private ProductHTTPClient productHTTPClient;
 
     private static final String CONTENT_TYPE = "application/json";
+    private static final String MICROSSERVICE = "ms_produto";
 
     public ProductGatewayImpl(ProductHTTPClient productHTTPClient) {
         this.productHTTPClient = productHTTPClient;
@@ -20,7 +21,7 @@ public class ProductGatewayImpl implements ProductGateway {
 
     @Override
     public Product getProductByIdAndType(String id, String type) throws EntityNotFoundException {
-        final var result = productHTTPClient.getProductByIdAndType(id, type, CONTENT_TYPE);
+        final var result = productHTTPClient.getProductByIdAndType(id, type, MICROSSERVICE, CONTENT_TYPE);
         final var response = result.getBody();
 
         if (response == null) {

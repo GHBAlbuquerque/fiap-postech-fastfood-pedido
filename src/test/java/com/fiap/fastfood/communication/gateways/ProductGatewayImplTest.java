@@ -31,7 +31,7 @@ public class ProductGatewayImplTest {
 
         final var response = ResponseEntity.ok(productResponseMock);
 
-        Mockito.when(productHTTPClient.getProductByIdAndType(anyString(), anyString(), anyString()))
+        Mockito.when(productHTTPClient.getProductByIdAndType(anyString(), anyString(),  anyString(), anyString()))
                 .thenReturn(response);
 
         Assertions.assertDoesNotThrow(() -> productGateway.getProductByIdAndType("id", "type"));
