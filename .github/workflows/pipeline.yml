@@ -7,6 +7,9 @@ on:
 env:
   ECR_REPOSITORY: fiap_postech_fastfood_pedido
   EKS_CLUSTER_NAME: eks_cluster_fiap_postech
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
 
 jobs:
   unit-test:
@@ -22,15 +25,21 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      - run: |
+      - name: Run Tests
+        run: |
           chmod +x ./gradlew
-          ./gradlew test 
+          ./gradlew test
+
+      - name: Run Coverage
+        run: |
+          chmod +x gradlew
+          ./gradlew jacocoTestReport
 
       - name: Upload JaCoCo coverage report
         uses: actions/upload-artifact@v2
         with:
           name: jacoco-report
-          path: build/reports/jacoco/test/html/
+          path: build/reports/jacoco/test/html/**
 
   build:
     name: build
@@ -87,9 +96,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ steps.commit.outputs.short }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
+          docker build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --build-arg AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f Dockerfile .
+          docker build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --build-arg AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN -t $ECR_REGISTRY/$ECR_REPOSITORY:latest -f Dockerfile . 
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: Update kube config
