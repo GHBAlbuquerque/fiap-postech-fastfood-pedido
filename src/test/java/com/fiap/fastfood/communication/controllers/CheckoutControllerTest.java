@@ -30,7 +30,7 @@ public class CheckoutControllerTest {
                 .post("/checkout")
                 .then()
                 .log().ifValidationFails()
-                //.statusCode(HttpStatus.CREATED.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .contentType(JSON);
     }
 
@@ -44,7 +44,7 @@ public class CheckoutControllerTest {
                 .get("/checkout")
                 .then()
                 .log().ifValidationFails()
-                //.statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.OK.value())
                 .contentType(JSON);
     }
 
