@@ -80,7 +80,8 @@ jacocoTestReport {
                     'com/fiap/fastfood/common/exceptions/*/**',
                     'com/fiap/fastfood/external/services/*/**',
                     'com/fiap/fastfood/core/entity/**',
-                    'com/fiap/fastfood/common/dto/*/**'
+                    'com/fiap/fastfood/common/dto/*/**',
+                    'com/fiap/fastfood/common/validation/**'
             ])
         }))
     }
