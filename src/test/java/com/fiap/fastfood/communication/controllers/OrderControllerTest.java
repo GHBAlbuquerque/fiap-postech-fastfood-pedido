@@ -2,10 +2,14 @@ package com.fiap.fastfood.communication.controllers;
 
 import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
 import com.fiap.fastfood.common.dto.request.OrderItemRequest;
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,25 +17,26 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class OrderControllerTest {
 
-    @LocalServerPort
+    @Value("${server.port}")
     private int port;
+
     @Test
     void givenCreateOrderRequestThenRespondWithStatusCreated() {
-        final var orderRequest = createOrder();
+        final var orderRequest = createOrderRequest();
 
         given()
                 .port(port)
-                .header("Content-Type", "application/json")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(orderRequest)
                 .when()
                 .post("/orders")
                 .then()
                 .log().ifValidationFails()
-                //.statusCode(HttpStatus.CREATED.value())
-                .contentType(JSON);
+                .statusCode(HttpStatus.CREATED.value())
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
     }
 
     @Test
@@ -39,13 +44,13 @@ public class OrderControllerTest {
 
         given()
                 .port(port)
-                .header("Content-Type", "application/json")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/orders")
                 .then()
                 .log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value())
-                .contentType(JSON);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
     }
 
     @Test
@@ -53,18 +58,18 @@ public class OrderControllerTest {
 
         given()
                 .port(port)
-                .header("Content-Type", "application/json")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .pathParam("id", "c96d9150-613d-440d-bd94-bf6eb76f7623")
                 .when()
                 .get("/orders/{id}/payment-status")
                 .then()
                 .log().ifValidationFails()
                 .statusCode(HttpStatus.OK.value())
-                .contentType(JSON);
+                .contentType(MediaType.APPLICATION_JSON_VALUE);
     }
 
-    private CreateOrderRequest createOrder() {
-        final var item = new OrderItemRequest("productId", "SANDWICH", 1,  BigDecimal.ONE);
+    private CreateOrderRequest createOrderRequest() {
+        final var item = new OrderItemRequest("productId", "SANDWICH", 1, BigDecimal.ONE);
 
         return new CreateOrderRequest(1L, List.of(item));
     }
