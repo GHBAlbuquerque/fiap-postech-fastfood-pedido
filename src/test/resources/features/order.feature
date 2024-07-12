@@ -1,5 +1,6 @@
 Feature: Order
 
+  # é necessário possuir produto e cliente cadastrado para funcionar
   Scenario: Create Order
     Given a new valid order request with valid products
     When a new order is succesfully created

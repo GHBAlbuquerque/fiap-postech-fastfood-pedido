@@ -70,11 +70,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
                 "The entity that was requested doesn't exist. Verify the request and try again.",
                 ex.getCode(),
                 ex.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 ex.getErrors());
 
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = {OrderCreationException.class})
@@ -85,11 +85,11 @@ public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
                 "The order cannot be created. Either non existant products or customers have been selected.",
                 ex.getCode(),
                 ex.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.BAD_REQUEST.value(),
                 new Date(),
                 ex.getErrors());
 
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
 

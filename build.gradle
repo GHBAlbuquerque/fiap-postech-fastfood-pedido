@@ -51,6 +51,7 @@ dependencies {
     testImplementation group: 'io.cucumber', name: 'cucumber-junit-platform-engine', version: '7.13.0'
     testImplementation group: 'io.cucumber', name: 'cucumber-spring', version: '7.13.0'
     testImplementation group: 'org.junit.platform', name: 'junit-platform-suite-api', version: '1.9.3'
+    testImplementation group: 'com.google.code.gson', name: 'gson', version: '2.10'
 
 }
 

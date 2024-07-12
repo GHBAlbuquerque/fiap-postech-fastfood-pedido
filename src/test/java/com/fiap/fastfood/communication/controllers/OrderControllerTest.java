@@ -69,7 +69,7 @@ public class OrderControllerTest {
     }
 
     private CreateOrderRequest createOrderRequest() {
-        final var item = new OrderItemRequest("productId", "SANDWICH", 1, BigDecimal.ONE);
+        final var item = new OrderItemRequest("0d60f617-f59e-4f88-8f04-4ad35c8248c9", "SANDWICH", 1, BigDecimal.ONE);
 
         return new CreateOrderRequest(1L, List.of(item));
     }

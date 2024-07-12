@@ -28,6 +28,7 @@ public class OrderBuilder {
 
     public static CreatedOrderResponse fromDomainToCreatedResponse(Order order) {
         return CreatedOrderResponse.builder()
+                .id(order.getId())
                 .customerId(order.getCustomerId())
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
