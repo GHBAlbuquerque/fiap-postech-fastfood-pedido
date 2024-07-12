@@ -21,6 +21,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +58,8 @@ public class OrderController {
                 productGateway,
                 customerGateway);
 
-        return ResponseEntity.ok(OrderBuilder.fromDomainToCreatedResponse(result));
+        final var uri = URI.create(result.getId());
+        return ResponseEntity.created(uri).body(OrderBuilder.fromDomainToCreatedResponse(result));
     }
 
     @ApiResponses(value = {

@@ -37,8 +37,9 @@ public class OrderGatewayImpl implements OrderGateway {
 
     @Override
     public List<Order> listOrder() {
-        return repository.findAll()
-                .stream()
+        final var result = repository.findAll();
+
+        return result.stream()
                 .filter(
                         order -> OrderStatus.valueOf(order.getStatus()) != OrderStatus.COMPLETED
                 )
