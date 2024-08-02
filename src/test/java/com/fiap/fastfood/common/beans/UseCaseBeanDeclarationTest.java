@@ -18,11 +18,4 @@ public class UseCaseBeanDeclarationTest {
 
         Assertions.assertNotNull(result);
     }
-
-    @Test
-    void checkoutUseCaseTest() {
-        final var result = declaration.checkoutUseCase();
-
-        Assertions.assertNotNull(result);
-    }
 }

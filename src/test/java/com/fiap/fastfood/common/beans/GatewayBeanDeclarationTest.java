@@ -1,6 +1,5 @@
 package com.fiap.fastfood.common.beans;
 
-import com.fiap.fastfood.common.interfaces.datasources.CheckoutRepository;
 import com.fiap.fastfood.common.interfaces.datasources.OrderRepository;
 import com.fiap.fastfood.external.services.customers.CustomerHTTPClient;
 import com.fiap.fastfood.external.services.products.ProductHTTPClient;
@@ -22,15 +21,6 @@ public class GatewayBeanDeclarationTest {
         final var mock = Mockito.mock(OrderRepository.class);
 
         final var result = declaration.orderGateway(mock);
-
-        Assertions.assertNotNull(result);
-    }
-
-    @Test
-    void CheckoutGatewayTest() {
-        final var mock = Mockito.mock(CheckoutRepository.class);
-
-        final var result = declaration.checkoutGateway(mock);
 
         Assertions.assertNotNull(result);
     }

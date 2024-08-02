@@ -1,15 +1,16 @@
 package com.fiap.fastfood.core.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
-import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
-import com.fiap.fastfood.core.entity.*;
+import com.fiap.fastfood.core.entity.Item;
+import com.fiap.fastfood.core.entity.Order;
+import com.fiap.fastfood.core.entity.OrderPaymentStatus;
+import com.fiap.fastfood.core.entity.OrderStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderUseCaseImpl implements OrderUseCase {

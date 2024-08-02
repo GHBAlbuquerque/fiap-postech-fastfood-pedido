@@ -6,7 +6,6 @@ import com.fiap.fastfood.common.interfaces.datasources.OrderRepository;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.core.entity.Order;
 import com.fiap.fastfood.core.entity.OrderStatus;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
