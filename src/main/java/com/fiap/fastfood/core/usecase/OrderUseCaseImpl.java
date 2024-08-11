@@ -27,7 +27,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
             validateOrderItens(order.getItems(), productGateway);
 
             order.setTotalValue(order.getTotalValue());
-            order.setStatus(OrderStatus.RECEIVED);
+            order.setStatus(OrderStatus.CREATED);
             order.setPaymentStatus(OrderPaymentStatus.PENDING);
 
             return orderGateway.saveOrder(order);

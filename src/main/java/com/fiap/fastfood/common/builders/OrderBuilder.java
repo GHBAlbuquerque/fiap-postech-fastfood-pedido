@@ -33,7 +33,12 @@ public class OrderBuilder {
                 .createdAt(order.getCreatedAt())
                 .updatedAt(order.getUpdatedAt())
                 .totalValue(order.getTotalValue())
-                .items(order.getItems())
+                .items(
+                        order.getItems()
+                                .stream()
+                                .map(ItemBuilder::fromDomainToResponse)
+                                .toList()
+                )
                 .status(order.getStatus())
                 .paymentStatus(order.getPaymentStatus())
                 .build();

@@ -51,7 +51,7 @@ public class OrderGatewayImpl implements OrderGateway {
         return switch (status) {
             case READY -> 1;
             case IN_PREPARATION -> 2;
-            case RECEIVED -> 3;
+            case CREATED -> 3;
             default -> 0;
         };
     }

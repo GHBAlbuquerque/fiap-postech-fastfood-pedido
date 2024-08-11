@@ -1,6 +1,7 @@
 package com.fiap.fastfood.common.builders;
 
 import com.fiap.fastfood.common.dto.request.OrderItemRequest;
+import com.fiap.fastfood.common.dto.response.ItemResponse;
 import com.fiap.fastfood.core.entity.Item;
 import com.fiap.fastfood.external.orm.ItemORM;
 
@@ -28,6 +29,15 @@ public class ItemBuilder {
                 .setProductType(request.getProductType())
                 .setQuantity(request.getQuantity())
                 .setItemValue(request.getProductValue());
+
+    }
+
+    public static ItemResponse fromDomainToResponse(Item item) {
+        return new ItemResponse()
+                .setProductId(item.getProductId())
+                .setProductType(item.getProductType())
+                .setQuantity(item.getQuantity())
+                .setItemValue(item.getItemValue());
 
     }
 }
