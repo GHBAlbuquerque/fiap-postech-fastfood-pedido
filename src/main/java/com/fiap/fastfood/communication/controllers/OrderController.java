@@ -35,14 +35,14 @@ public class OrderController {
     private final CustomerGateway customerGateway;
 
 
-    public OrderController(OrderGateway orderGateway, OrderUseCase orderUseCase, ProductGateway productGateway, CustomerGateway customerGateway) {
-        this.gateway = orderGateway;
+    public OrderController(OrderUseCase orderUseCase, OrderGateway orderGateway, ProductGateway productGateway, CustomerGateway customerGateway) {
         this.useCase = orderUseCase;
+        this.gateway = orderGateway;
         this.productGateway = productGateway;
         this.customerGateway = customerGateway;
     }
 
-    @ApiResponses(value = {
+    /*@ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
@@ -60,7 +60,7 @@ public class OrderController {
 
         final var uri = URI.create(result.getId());
         return ResponseEntity.created(uri).body(OrderBuilder.fromDomainToCreatedResponse(result));
-    }
+    }*/
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"),
