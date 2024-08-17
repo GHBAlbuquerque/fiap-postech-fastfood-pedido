@@ -156,7 +156,7 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
 
             logger.info(LoggingPattern.RESPONSE_END_LOG,
                     message.getHeaders().getSagaId(),
-                    "Order Preparation");
+                    Constants.MS_SAGA);
 
         } catch (Exception ex) {
 

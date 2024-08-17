@@ -64,15 +64,15 @@ public class OrderUseCaseImpl implements OrderUseCase {
             );
 
             var receiveCount = Integer.valueOf(TransactionInformationStorage.getReceiveCount());
-            receiveCount++;
 
-            if (MAX_RECEIVE_COUNT.equals(receiveCount)) { //TODO: ver se mudou o valor dentro do objeto
+            if (MAX_RECEIVE_COUNT.equals(receiveCount)) {
                 orquestrationGateway.sendResponse(
                         order,
                         OrquestrationStepEnum.CREATE_ORDER,
                         Boolean.FALSE
                 );
             }
+
             throw new OrderCreationException(
                     ExceptionCodes.ORDER_02_ORDER_CREATION,
                     String.format("Couldn't create order. Error: %s", ex.getMessage())
