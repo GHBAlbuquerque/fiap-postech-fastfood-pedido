@@ -5,23 +5,37 @@ import com.fiap.fastfood.common.exceptions.custom.ExceptionCodes;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
+import com.fiap.fastfood.common.interfaces.gateways.OrquestrationGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
-import com.fiap.fastfood.core.entity.Item;
-import com.fiap.fastfood.core.entity.Order;
-import com.fiap.fastfood.core.entity.OrderPaymentStatus;
-import com.fiap.fastfood.core.entity.OrderStatus;
+import com.fiap.fastfood.common.logging.Constants;
+import com.fiap.fastfood.common.logging.LoggingPattern;
+import com.fiap.fastfood.common.logging.TransactionInformationStorage;
+import com.fiap.fastfood.core.entity.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
+import static com.fiap.fastfood.common.logging.Constants.MAX_RECEIVE_COUNT;
+
 public class OrderUseCaseImpl implements OrderUseCase {
+
+    private static final Logger logger = LogManager.getLogger(OrderUseCaseImpl.class);
 
     @Override
     public Order createOrder(Order order,
                              OrderGateway orderGateway,
                              ProductGateway productGateway,
-                             CustomerGateway customerGateway)
+                             CustomerGateway customerGateway,
+                             OrquestrationGateway orquestrationGateway)
             throws OrderCreationException {
+
+        logger.info(
+                LoggingPattern.ORDER_CREATION_INIT_LOG,
+                TransactionInformationStorage.getSagaId(),
+                Constants.MS_SAGA
+        );
 
         try {
             validateOrderCustomer(order.getCustomerId(), customerGateway);
@@ -31,15 +45,56 @@ public class OrderUseCaseImpl implements OrderUseCase {
             order.setStatus(OrderStatus.CREATED);
             order.setPaymentStatus(OrderPaymentStatus.PENDING);
 
-            return orderGateway.saveOrder(order);
+            final var savedOrder = orderGateway.saveOrder(order);
+
+            orquestrationGateway.sendResponse(
+                    savedOrder,
+                    OrquestrationStepEnum.CREATE_ORDER,
+                    Boolean.TRUE
+            );
+
+            return savedOrder;
 
         } catch (Exception ex) {
+
+            logger.error(
+                    LoggingPattern.ORDER_CREATION_ERROR_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    ex.getMessage()
+            );
+
+            var receiveCount = Integer.valueOf(TransactionInformationStorage.getReceiveCount());
+            receiveCount++;
+
+            if (MAX_RECEIVE_COUNT.equals(receiveCount)) { //TODO: ver se mudou o valor dentro do objeto
+                orquestrationGateway.sendResponse(
+                        order,
+                        OrquestrationStepEnum.CREATE_ORDER,
+                        Boolean.FALSE
+                );
+            }
             throw new OrderCreationException(
                     ExceptionCodes.ORDER_02_ORDER_CREATION,
                     String.format("Couldn't create order. Error: %s", ex.getMessage())
             );
         }
     }
+
+    @Override
+    public Order prepareOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) {
+        return null;
+    }
+
+    @Override
+    public Order completeOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) {
+        return null;
+    }
+
+    @Override
+    public Order cancelOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) {
+        return null;
+    }
+
 
     @Override
     public List<Order> listOrder(OrderGateway orderGateway) {
@@ -71,7 +126,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
             if (!result)
                 throw new OrderCreationException(
                         ExceptionCodes.ORDER_05_PRODUCT_PRICE_UNMATCH,
-                        String.format("Item price does not match product price.")
+                        "Item price does not match product price."
                 );
         }
 

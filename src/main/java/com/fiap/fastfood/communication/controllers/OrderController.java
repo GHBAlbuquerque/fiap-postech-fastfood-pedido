@@ -42,26 +42,6 @@ public class OrderController {
         this.customerGateway = customerGateway;
     }
 
-    /*@ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Success"),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
-            @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
-            @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
-    })
-    @PostMapping(produces = "application/json", consumes = "application/json")
-    public ResponseEntity<CreatedOrderResponse> createOrder(
-            @Valid @RequestBody CreateOrderRequest request)
-            throws OrderCreationException, NoSuchEntityException {
-        final var result = useCase.createOrder(
-                OrderBuilder.fromRequestToDomain(request),
-                gateway,
-                productGateway,
-                customerGateway);
-
-        final var uri = URI.create(result.getId());
-        return ResponseEntity.created(uri).body(OrderBuilder.fromDomainToCreatedResponse(result));
-    }*/
-
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"),
             @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),

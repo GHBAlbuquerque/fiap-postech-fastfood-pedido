@@ -5,6 +5,7 @@ import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
+import com.fiap.fastfood.common.interfaces.gateways.OrquestrationGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.core.entity.Item;
 import com.fiap.fastfood.core.entity.Order;
@@ -16,7 +17,20 @@ public interface OrderUseCase {
     Order createOrder(Order order,
                       OrderGateway orderGateway,
                       ProductGateway productGateway,
-                      CustomerGateway customerGateway) throws NoSuchEntityException, OrderCreationException;
+                      CustomerGateway customerGateway,
+                      OrquestrationGateway orquestrationGateway) throws NoSuchEntityException, OrderCreationException;
+
+    Order prepareOrder(Order order,
+                       OrderGateway orderGateway,
+                       OrquestrationGateway orquestrationGateway);
+
+    Order completeOrder(Order order,
+                        OrderGateway orderGateway,
+                        OrquestrationGateway orquestrationGateway);
+
+    Order cancelOrder(Order order,
+                      OrderGateway orderGateway,
+                      OrquestrationGateway orquestrationGateway);
 
     List<Order> listOrder(OrderGateway orderGateway);
 

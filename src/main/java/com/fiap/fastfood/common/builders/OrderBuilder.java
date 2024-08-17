@@ -1,5 +1,6 @@
 package com.fiap.fastfood.common.builders;
 
+import com.fiap.fastfood.common.dto.command.CreateOrderCommand;
 import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
 import com.fiap.fastfood.common.dto.response.CreatedOrderResponse;
 import com.fiap.fastfood.common.dto.response.GetOrderResponse;
@@ -53,6 +54,13 @@ public class OrderBuilder {
                                 .map(ItemBuilder::fromRequestToDomain)
                                 .toList()
                 )
+                .build();
+    }
+
+    public static Order fromCommandToDomain(CreateOrderCommand command) {
+        return Order.builder()
+                .customerId(command.getCustomerId())
+                .items(command.getItems())
                 .build();
     }
 
