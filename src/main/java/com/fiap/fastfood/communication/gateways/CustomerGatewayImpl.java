@@ -6,6 +6,8 @@ import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.core.entity.Customer;
 import com.fiap.fastfood.external.services.customers.CustomerHTTPClient;
 
+import static com.fiap.fastfood.common.exceptions.custom.ExceptionCodes.ORDER_04_CUSTOMERID_UNMATCH;
+
 public class CustomerGatewayImpl implements CustomerGateway {
 
     private CustomerHTTPClient customerHTTPClient;
@@ -24,7 +26,7 @@ public class CustomerGatewayImpl implements CustomerGateway {
 
         if (response == null) {
             throw new EntityNotFoundException(
-                    "ORDER-04",
+                    ORDER_04_CUSTOMERID_UNMATCH,
                     String.format("Customer with id %s on Order Item not found", customerId)
             );
         }

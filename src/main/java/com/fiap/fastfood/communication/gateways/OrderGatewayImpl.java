@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.fiap.fastfood.common.exceptions.custom.ExceptionCodes.ORDER_01_NOT_FOUND;
+
 public class OrderGatewayImpl implements OrderGateway {
 
     private final OrderRepository repository;
@@ -30,7 +32,7 @@ public class OrderGatewayImpl implements OrderGateway {
     public Order getOrderById(String id) throws EntityNotFoundException {
         return repository.findById(id)
                 .map(OrderBuilder::fromOrmToDomain)
-                .orElseThrow(() -> new EntityNotFoundException("ORDER-01", String.format("Order with ID %s not found", id)));
+                .orElseThrow(() -> new EntityNotFoundException(ORDER_01_NOT_FOUND, String.format("Order with ID %s not found", id)));
     }
 
     @Override

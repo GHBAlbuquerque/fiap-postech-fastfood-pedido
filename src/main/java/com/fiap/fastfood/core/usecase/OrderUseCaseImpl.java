@@ -1,6 +1,7 @@
 package com.fiap.fastfood.core.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
+import com.fiap.fastfood.common.exceptions.custom.ExceptionCodes;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
@@ -34,7 +35,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
         } catch (Exception ex) {
             throw new OrderCreationException(
-                    "ORDER-02",
+                    ExceptionCodes.ORDER_02_ORDER_CREATION,
                     String.format("Couldn't create order. Error: %s", ex.getMessage())
             );
         }
@@ -69,7 +70,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
             if (!result)
                 throw new OrderCreationException(
-                        "ORDER-05",
+                        ExceptionCodes.ORDER_05_PRODUCT_PRICE_UNMATCH,
                         String.format("Item price does not match product price.")
                 );
         }
