@@ -113,6 +113,38 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
                     message.getHeaders().getSagaId(),
                     message.getHeaders().getMicrosservice());
 
+        } catch (Exception ex) {
+
+            logger.info(LoggingPattern.COMMAND_ERROR_LOG,
+                    message.getHeaders().getSagaId(),
+                    message.getHeaders().getMicrosservice(),
+                    ex.getMessage(),
+                    message.toString());
+
+            throw new OrderCreationException(ExceptionCodes.ORDER_07_COMMAND_PROCESSING, ex.getMessage());
+        }
+    }
+
+    @Override
+    @SqsListener(queueNames = "${aws.queue_comando_encerrar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1", acknowledgementMode = ON_SUCCESS)
+    public void listenToOrderCompletion(MessageHeaders headers, CustomQueueMessage<OrderCommand> message) throws OrderCreationException {
+        logger.info(
+                LoggingPattern.COMMAND_INIT_LOG,
+                message.getHeaders().getSagaId(),
+                message.getHeaders().getMicrosservice()
+        );
+
+        TransactionInformationStorage.fill(message.getHeaders());
+        TransactionInformationStorage.putReceiveCount(headers.get(HEADER_RECEIVE_COUNT, String.class));
+
+        try {
+
+            final var order = new Order(message.getBody().getOrderId(), message.getBody().getCustomerId());
+
+            orderUseCase.completeOrder(order,
+                    orderGateway,
+                    this);
+
             logger.info(LoggingPattern.COMMAND_END_LOG,
                     message.getHeaders().getSagaId(),
                     message.getHeaders().getMicrosservice());
@@ -130,15 +162,39 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
     }
 
     @Override
-    @SqsListener(queueNames = "${aws.queue_comando_encerrar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1", acknowledgementMode = ON_SUCCESS)
-    public void listenToOrderCompletion(MessageHeaders headers, CustomQueueMessage<OrderCommand> message) throws OrderCreationException {
-
-    }
-
-    @Override
     @SqsListener(queueNames = "${aws.comando_cancelar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1", acknowledgementMode = ON_SUCCESS)
     public void listenToOrderCancellation(MessageHeaders headers, CustomQueueMessage<OrderCommand> message) throws OrderCancellationException {
+        logger.info(
+                LoggingPattern.COMMAND_INIT_LOG,
+                message.getHeaders().getSagaId(),
+                message.getHeaders().getMicrosservice()
+        );
 
+        TransactionInformationStorage.fill(message.getHeaders());
+        TransactionInformationStorage.putReceiveCount(headers.get(HEADER_RECEIVE_COUNT, String.class));
+
+        try {
+
+            final var order = new Order(message.getBody().getOrderId(), message.getBody().getCustomerId());
+
+            orderUseCase.cancelOrder(order,
+                    orderGateway,
+                    this);
+
+            logger.info(LoggingPattern.COMMAND_END_LOG,
+                    message.getHeaders().getSagaId(),
+                    message.getHeaders().getMicrosservice());
+
+        } catch (Exception ex) {
+
+            logger.info(LoggingPattern.COMMAND_ERROR_LOG,
+                    message.getHeaders().getSagaId(),
+                    message.getHeaders().getMicrosservice(),
+                    ex.getMessage(),
+                    message.toString());
+
+            throw new OrderCancellationException(ExceptionCodes.ORDER_07_COMMAND_PROCESSING, ex.getMessage());
+        }
     }
 
     @Override
