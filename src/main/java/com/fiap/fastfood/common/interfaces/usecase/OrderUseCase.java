@@ -22,15 +22,15 @@ public interface OrderUseCase {
 
     Order prepareOrder(Order order,
                        OrderGateway orderGateway,
-                       OrquestrationGateway orquestrationGateway);
+                       OrquestrationGateway orquestrationGateway) throws OrderCreationException, InterruptedException, EntityNotFoundException;
 
     Order completeOrder(Order order,
                         OrderGateway orderGateway,
-                        OrquestrationGateway orquestrationGateway);
+                        OrquestrationGateway orquestrationGateway) throws OrderCreationException;
 
     Order cancelOrder(Order order,
                       OrderGateway orderGateway,
-                      OrquestrationGateway orquestrationGateway);
+                      OrquestrationGateway orquestrationGateway) throws OrderCreationException;
 
     List<Order> listOrder(OrderGateway orderGateway);
 

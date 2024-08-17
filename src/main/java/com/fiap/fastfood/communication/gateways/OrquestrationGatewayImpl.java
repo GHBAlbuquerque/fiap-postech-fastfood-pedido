@@ -98,14 +98,20 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
                 message.getHeaders().getMicrosservice()
         );
 
+        TransactionInformationStorage.fill(message.getHeaders());
+        TransactionInformationStorage.putReceiveCount(headers.get(HEADER_RECEIVE_COUNT, String.class));
+
         try {
 
-            /*final var order = OrderBuilder.fromCommandToDomain(message.getBody());
+            final var order = new Order(message.getBody().getOrderId(), message.getBody().getCustomerId());
 
-            orderUseCase.createOrder(order,
+            orderUseCase.prepareOrder(order,
                     orderGateway,
-                    productGateway,
-                    customerGateway);*/
+                    this);
+
+            logger.info(LoggingPattern.COMMAND_END_LOG,
+                    message.getHeaders().getSagaId(),
+                    message.getHeaders().getMicrosservice());
 
             logger.info(LoggingPattern.COMMAND_END_LOG,
                     message.getHeaders().getSagaId(),

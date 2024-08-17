@@ -53,6 +53,12 @@ public class OrderUseCaseImpl implements OrderUseCase {
                     Boolean.TRUE
             );
 
+            logger.info(
+                    LoggingPattern.ORDER_CREATION_END_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    Constants.MS_SAGA
+            );
+
             return savedOrder;
 
         } catch (Exception ex) {
@@ -81,18 +87,169 @@ public class OrderUseCaseImpl implements OrderUseCase {
     }
 
     @Override
-    public Order prepareOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) {
-        return null;
+    public Order prepareOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCreationException {
+        logger.info(
+                LoggingPattern.ORDER_PREPARATION_INIT_LOG,
+                TransactionInformationStorage.getSagaId(),
+                Constants.MS_SAGA
+        );
+
+        try {
+
+            orderGateway.updateOrderPaymentStatus(order.getId(),
+                    OrderPaymentStatus.APPROVED);
+
+            Thread.sleep(3000L);
+
+            orderGateway.updateOrderStatus(order.getId(),
+                    OrderStatus.IN_PREPARATION);
+
+            orquestrationGateway.sendResponse(
+                    order,
+                    OrquestrationStepEnum.PREPARE_ORDER,
+                    Boolean.TRUE
+            );
+
+            logger.info(
+                    LoggingPattern.ORDER_PREPARATION_END_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    Constants.MS_SAGA
+            );
+
+            return order;
+
+        } catch (Exception ex) {
+
+            logger.error(
+                    LoggingPattern.ORDER_PREPARATION_ERROR_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    ex.getMessage()
+            );
+
+            var receiveCount = Integer.valueOf(TransactionInformationStorage.getReceiveCount());
+
+            if (MAX_RECEIVE_COUNT.equals(receiveCount)) {
+                orquestrationGateway.sendResponse(
+                        order,
+                        OrquestrationStepEnum.PREPARE_ORDER,
+                        Boolean.FALSE
+                );
+            }
+
+            throw new OrderCreationException(
+                    ExceptionCodes.ORDER_09_ORDER_PREPARATION,
+                    String.format("Error preparing order. Error: %s", ex.getMessage())
+            );
+        }
     }
 
     @Override
-    public Order completeOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) {
-        return null;
+    public Order completeOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCreationException {
+        logger.info(
+                LoggingPattern.ORDER_COMPLETION_INIT_LOG,
+                TransactionInformationStorage.getSagaId(),
+                Constants.MS_SAGA
+        );
+
+        try {
+
+            Thread.sleep(2000L);
+
+            orderGateway.updateOrderStatus(order.getId(),
+                    OrderStatus.COMPLETED);
+
+            orquestrationGateway.sendResponse(
+                    order,
+                    OrquestrationStepEnum.COMPLETE_ORDER,
+                    Boolean.TRUE
+            );
+
+            logger.info(
+                    LoggingPattern.ORDER_COMPLETION_END_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    Constants.MS_SAGA
+            );
+
+            return order;
+
+        } catch (Exception ex) {
+
+            logger.error(
+                    LoggingPattern.ORDER_COMPLETION_ERROR_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    ex.getMessage()
+            );
+
+            var receiveCount = Integer.valueOf(TransactionInformationStorage.getReceiveCount());
+
+            if (MAX_RECEIVE_COUNT.equals(receiveCount)) {
+                orquestrationGateway.sendResponse(
+                        order,
+                        OrquestrationStepEnum.COMPLETE_ORDER,
+                        Boolean.FALSE
+                );
+            }
+
+            throw new OrderCreationException(
+                    ExceptionCodes.ORDER_10_ORDER_COMPLETION,
+                    String.format("Error completing order. Error: %s", ex.getMessage())
+            );
+        }
     }
 
     @Override
-    public Order cancelOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) {
-        return null;
+    public Order cancelOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCreationException {
+        logger.info(
+                LoggingPattern.ORDER_CANCELLATION_INIT_LOG,
+                TransactionInformationStorage.getSagaId(),
+                Constants.MS_SAGA
+        );
+
+        try {
+
+            orderGateway.updateOrderStatus(order.getId(),
+                    OrderStatus.CANCELLED);
+
+            orderGateway.updateOrderPaymentStatus(order.getId(),
+                    OrderPaymentStatus.REJECTED);
+
+            orquestrationGateway.sendResponse(
+                    order,
+                    OrquestrationStepEnum.CANCEL_ORDER,
+                    Boolean.TRUE
+            );
+
+            logger.info(
+                    LoggingPattern.ORDER_CANCELLATION_END_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    Constants.MS_SAGA
+            );
+
+            return order;
+
+        } catch (Exception ex) {
+
+            logger.error(
+                    LoggingPattern.ORDER_CANCELLATION_ERROR_LOG,
+                    TransactionInformationStorage.getSagaId(),
+                    ex.getMessage()
+            );
+
+            var receiveCount = Integer.valueOf(TransactionInformationStorage.getReceiveCount());
+
+            if (MAX_RECEIVE_COUNT.equals(receiveCount)) {
+                orquestrationGateway.sendResponse(
+                        order,
+                        OrquestrationStepEnum.COMPLETE_ORDER,
+                        Boolean.FALSE
+                );
+            }
+
+            throw new OrderCreationException(
+                    ExceptionCodes.ORDER_11_ORDER_CANCEL,
+                    String.format("Error cancelling order. Error: %s", ex.getMessage())
+            );
+        }
     }
 
 

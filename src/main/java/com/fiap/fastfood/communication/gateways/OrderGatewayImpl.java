@@ -5,8 +5,8 @@ import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.interfaces.datasources.OrderRepository;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.core.entity.Order;
+import com.fiap.fastfood.core.entity.OrderPaymentStatus;
 import com.fiap.fastfood.core.entity.OrderStatus;
-import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
@@ -34,6 +34,21 @@ public class OrderGatewayImpl implements OrderGateway {
                 .map(OrderBuilder::fromOrmToDomain)
                 .orElseThrow(() -> new EntityNotFoundException(ORDER_01_NOT_FOUND, String.format("Order with ID %s not found", id)));
     }
+
+    @Override
+    public Order updateOrderStatus(String id, OrderStatus orderStatus) throws EntityNotFoundException {
+        final var order = getOrderById(id);
+        order.setStatus(orderStatus);
+        return saveOrder(order);
+    }
+
+    @Override
+    public Order updateOrderPaymentStatus(String id, OrderPaymentStatus orderPaymentStatus) throws EntityNotFoundException {
+        final var order = getOrderById(id);
+        order.setPaymentStatus(orderPaymentStatus);
+        return saveOrder(order);
+    }
+
 
     @Override
     public List<Order> listOrder() {

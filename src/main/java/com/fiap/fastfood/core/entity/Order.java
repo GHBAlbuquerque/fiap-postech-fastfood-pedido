@@ -28,4 +28,9 @@ public class Order {
                 .map(Item::getTotalItemValue)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+    public Order(String id, Long customerId) {
+        this.id = id;
+        this.customerId = customerId;
+    }
 }
