@@ -33,8 +33,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
         logger.info(
                 LoggingPattern.ORDER_CREATION_INIT_LOG,
-                TransactionInformationStorage.getSagaId(),
-                Constants.MS_SAGA
+                TransactionInformationStorage.getSagaId()
         );
 
         try {
@@ -55,8 +54,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
             logger.info(
                     LoggingPattern.ORDER_CREATION_END_LOG,
-                    TransactionInformationStorage.getSagaId(),
-                    Constants.MS_SAGA
+                    TransactionInformationStorage.getSagaId()
             );
 
             return savedOrder;
@@ -90,8 +88,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
     public Order prepareOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCreationException {
         logger.info(
                 LoggingPattern.ORDER_PREPARATION_INIT_LOG,
-                TransactionInformationStorage.getSagaId(),
-                Constants.MS_SAGA
+                TransactionInformationStorage.getSagaId()
         );
 
         try {
@@ -112,8 +109,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
             logger.info(
                     LoggingPattern.ORDER_PREPARATION_END_LOG,
-                    TransactionInformationStorage.getSagaId(),
-                    Constants.MS_SAGA
+                    TransactionInformationStorage.getSagaId()
             );
 
             return order;
@@ -147,8 +143,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
     public Order completeOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCreationException {
         logger.info(
                 LoggingPattern.ORDER_COMPLETION_INIT_LOG,
-                TransactionInformationStorage.getSagaId(),
-                Constants.MS_SAGA
+                TransactionInformationStorage.getSagaId()
         );
 
         try {
@@ -166,8 +161,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
             logger.info(
                     LoggingPattern.ORDER_COMPLETION_END_LOG,
-                    TransactionInformationStorage.getSagaId(),
-                    Constants.MS_SAGA
+                    TransactionInformationStorage.getSagaId()
             );
 
             return order;
@@ -201,8 +195,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
     public Order cancelOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCreationException {
         logger.info(
                 LoggingPattern.ORDER_CANCELLATION_INIT_LOG,
-                TransactionInformationStorage.getSagaId(),
-                Constants.MS_SAGA
+                TransactionInformationStorage.getSagaId()
         );
 
         try {
@@ -221,8 +214,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
 
             logger.info(
                     LoggingPattern.ORDER_CANCELLATION_END_LOG,
-                    TransactionInformationStorage.getSagaId(),
-                    Constants.MS_SAGA
+                    TransactionInformationStorage.getSagaId()
             );
 
             return order;
