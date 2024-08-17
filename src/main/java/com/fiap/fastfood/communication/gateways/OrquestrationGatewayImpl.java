@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.MessageHeaders;
 
 import static com.fiap.fastfood.common.logging.Constants.*;
+import static io.awspring.cloud.sqs.annotation.SqsListenerAcknowledgementMode.ON_SUCCESS;
 
 public class OrquestrationGatewayImpl implements OrquestrationGateway {
 
@@ -50,12 +51,12 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
     private String queueResponseSaga;
 
     @Override
-    @SqsListener(queueNames = "${aws.queue_comando_criar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1")
+    @SqsListener(queueNames = "${aws.queue_comando_criar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1", acknowledgementMode = ON_SUCCESS)
     public void listenToOrderCreation(MessageHeaders headers,
                                       CustomQueueMessage<CreateOrderCommand> message) throws OrderCreationException {
         logger.info(
-                message.getHeaders().getSagaId(),
                 LoggingPattern.COMMAND_INIT_LOG,
+                message.getHeaders().getSagaId(),
                 message.getHeaders().getMicrosservice()
         );
 
@@ -89,11 +90,11 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
     }
 
     @Override
-    @SqsListener(queueNames = "${aws.queue_comando_preparar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1")
+    @SqsListener(queueNames = "${aws.queue_comando_preparar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1", acknowledgementMode = ON_SUCCESS)
     public void listenToOrderPreparation(MessageHeaders headers, CustomQueueMessage<OrderCommand> message) throws OrderCreationException {
         logger.info(
-                message.getHeaders().getSagaId(),
                 LoggingPattern.COMMAND_INIT_LOG,
+                message.getHeaders().getSagaId(),
                 message.getHeaders().getMicrosservice()
         );
 
@@ -123,13 +124,13 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
     }
 
     @Override
-    @SqsListener(queueNames = "${aws.queue_comando_encerrar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1")
+    @SqsListener(queueNames = "${aws.queue_comando_encerrar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1", acknowledgementMode = ON_SUCCESS)
     public void listenToOrderCompletion(MessageHeaders headers, CustomQueueMessage<OrderCommand> message) throws OrderCreationException {
 
     }
 
     @Override
-    @SqsListener(queueNames = "${aws.comando_cancelar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1")
+    @SqsListener(queueNames = "${aws.comando_cancelar_pedido.url}", maxConcurrentMessages = "1", maxMessagesPerPoll = "1", acknowledgementMode = ON_SUCCESS)
     public void listenToOrderCancellation(MessageHeaders headers, CustomQueueMessage<OrderCommand> message) throws OrderCancellationException {
 
     }
