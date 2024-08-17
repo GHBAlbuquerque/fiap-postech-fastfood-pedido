@@ -235,7 +235,7 @@ public class OrquestrationGatewayImpl implements OrquestrationGateway {
     }
 
     private static CustomQueueMessage<CreateOrderResponse> createResponseMessage(Order order, OrquestrationStepEnum orquestrationStepEnum, Boolean stepSuccessful) {
-        final var headers = new CustomMessageHeaders(TransactionInformationStorage.getSagaId(), order.getId(), MESSAGE_TYPE_RESPONSE, MS_SAGA);
+        final var headers = new CustomMessageHeaders(TransactionInformationStorage.getSagaId(), order.getId(), MESSAGE_TYPE_RESPONSE, MS_ORDER);
         return new CustomQueueMessage<>(
                 headers,
                 new CreateOrderResponse(order.getId(),
