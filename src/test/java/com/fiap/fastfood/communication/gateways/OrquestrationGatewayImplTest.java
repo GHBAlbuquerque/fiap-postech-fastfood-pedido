@@ -18,8 +18,10 @@ import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
 import com.fiap.fastfood.core.entity.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.MessageHeaders;
 
 import java.math.BigDecimal;
@@ -31,6 +33,7 @@ import static com.fiap.fastfood.common.exceptions.custom.ExceptionCodes.ORDER_07
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class OrquestrationGatewayImplTest {
 
     @InjectMocks

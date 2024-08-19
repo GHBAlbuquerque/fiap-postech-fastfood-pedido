@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
-public class ProductGatewayImplTest {
+class ProductGatewayImplTest {
 
     @InjectMocks
     private ProductGatewayImpl productGateway;
