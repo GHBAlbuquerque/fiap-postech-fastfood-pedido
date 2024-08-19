@@ -1,6 +1,7 @@
 package com.fiap.fastfood.communication.gateways;
 
 import com.fiap.fastfood.common.builders.OrderBuilder;
+import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.interfaces.datasources.OrderRepository;
 import com.fiap.fastfood.core.entity.Item;
 import com.fiap.fastfood.core.entity.Order;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -19,26 +19,29 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderGatewayImplTest {
+class OrderGatewayImplTest {
 
     @InjectMocks
     OrderGatewayImpl orderGateway;
 
     @Mock
-    OrderRepository orderRepository;
+    OrderRepository repository;
 
     @Test
     void saveOrderTest() {
         final var orderMock = createOrder();
         final var orderORM = OrderBuilder.fromDomainToOrm(orderMock);
 
-        Mockito.when(orderRepository.save(any()))
+        when(repository.save(any()))
                 .thenReturn(orderORM);
 
-        Assertions.assertNotNull(
+        assertNotNull(
                 orderGateway.saveOrder(orderMock)
         );
     }
@@ -48,14 +51,55 @@ public class OrderGatewayImplTest {
         final var orderMock = createOrder();
         final var orderORM = OrderBuilder.fromDomainToOrm(orderMock);
 
-        Mockito.when(orderRepository.findById(any()))
+        when(repository.findById(any()))
                 .thenReturn(Optional.ofNullable(orderORM));
 
         final var result = Assertions.assertDoesNotThrow(
                 () -> orderGateway.getOrderById("id")
         );
 
-        Assertions.assertNotNull(result);
+        assertNotNull(result);
+    }
+
+    @Test
+    void testUpdateOrderStatus() throws EntityNotFoundException {
+        // Arrange
+        String id = "123";
+        final var orderORM = OrderBuilder.fromDomainToOrm(createOrder());
+        final var order = createOrder();
+
+        order.setStatus(OrderStatus.READY);
+
+        when(repository.findById(id)).thenReturn(Optional.of(orderORM));
+        when(repository.save(any())).thenReturn(orderORM);
+
+        // Act
+        Order result = orderGateway.updateOrderStatus(id, OrderStatus.READY);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(OrderStatus.CREATED, result.getStatus());
+    }
+
+    @Test
+    void testUpdateOrderPaymentStatus() throws EntityNotFoundException {
+        // Arrange
+        String id = "123";
+        final var orderORM = OrderBuilder.fromDomainToOrm(createOrder());
+        final var order = createOrder();
+
+        order.setPaymentStatus(OrderPaymentStatus.APPROVED);
+        orderORM.setPaymentStatus(OrderPaymentStatus.APPROVED.name());
+
+        when(repository.findById(id)).thenReturn(Optional.of(orderORM));
+        when(repository.save(any())).thenReturn(orderORM);
+
+        // Act
+        Order result = orderGateway.updateOrderPaymentStatus(id, OrderPaymentStatus.APPROVED);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(OrderPaymentStatus.APPROVED, result.getPaymentStatus());
     }
 
     @Test
@@ -63,7 +107,7 @@ public class OrderGatewayImplTest {
         final var orderMock = createOrder();
         final var orderORM = OrderBuilder.fromDomainToOrm(orderMock);
 
-        Mockito.when(orderRepository.findAll())
+        when(repository.findAll())
                 .thenReturn(List.of(orderORM));
 
         final var result = Assertions.assertDoesNotThrow(
