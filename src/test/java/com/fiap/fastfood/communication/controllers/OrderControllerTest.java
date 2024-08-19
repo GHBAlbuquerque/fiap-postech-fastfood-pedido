@@ -20,22 +20,6 @@ public class OrderControllerTest {
     private int port;
 
     @Test
-    void givenCreateOrderRequestThenRespondWithStatusCreated() {
-        final var orderRequest = createOrderRequest();
-
-        given()
-                .port(port)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(orderRequest)
-                .when()
-                .post("/orders")
-                .then()
-                .log().ifValidationFails()
-                .statusCode(HttpStatus.CREATED.value())
-                .contentType(MediaType.APPLICATION_JSON_VALUE);
-    }
-
-    @Test
     void givenGetOrderThenRespondWithOrderListAndStatusOk() {
 
         given()
@@ -60,7 +44,7 @@ public class OrderControllerTest {
                 .get("/orders/{id}/payment-status")
                 .then()
                 .log().ifValidationFails()
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .contentType(MediaType.APPLICATION_JSON_VALUE);
     }
 

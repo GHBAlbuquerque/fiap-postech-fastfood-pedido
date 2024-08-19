@@ -6,6 +6,7 @@ import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrquestrationGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
+import com.fiap.fastfood.common.logging.TransactionInformationStorage;
 import com.fiap.fastfood.core.entity.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,8 @@ class OrderUseCaseImplTest {
         final var orquestrationGateway = Mockito.mock(OrquestrationGateway.class);
         final var orderMock = createOrder();
         final var productMock = Mockito.mock(Product.class);
+
+        TransactionInformationStorage.putReceiveCount("1");
 
         Mockito.when(productGatewayMock.getProductByIdAndType(anyString(), anyString()))
                 .thenReturn(productMock);
