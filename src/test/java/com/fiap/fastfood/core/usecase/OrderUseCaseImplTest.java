@@ -4,6 +4,7 @@ import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
+import com.fiap.fastfood.common.interfaces.gateways.OrquestrationGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.core.entity.*;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderUseCaseImplTest {
+class OrderUseCaseImplTest {
 
     @InjectMocks
     private OrderUseCaseImpl orderUseCase;
@@ -30,6 +31,7 @@ public class OrderUseCaseImplTest {
         final var gatewayMock = Mockito.mock(OrderGateway.class);
         final var productGatewayMock = Mockito.mock(ProductGateway.class);
         final var customerGatewayMock = Mockito.mock(CustomerGateway.class);
+        final var orquestrationGateway = Mockito.mock(OrquestrationGateway.class);
         final var orderMock = createOrder();
         final var productMock = Mockito.mock(Product.class);
 
@@ -47,7 +49,8 @@ public class OrderUseCaseImplTest {
                         () -> orderUseCase.createOrder(orderMock,
                                 gatewayMock,
                                 productGatewayMock,
-                                customerGatewayMock)
+                                customerGatewayMock,
+                                orquestrationGateway)
                 );
 
         Assertions.assertNotNull(result);
@@ -58,6 +61,7 @@ public class OrderUseCaseImplTest {
         final var gatewayMock = Mockito.mock(OrderGateway.class);
         final var productGatewayMock = Mockito.mock(ProductGateway.class);
         final var customerGatewayMock = Mockito.mock(CustomerGateway.class);
+        final var orquestrationGateway = Mockito.mock(OrquestrationGateway.class);
         final var orderMock = createOrder();
         final var productMock = Mockito.mock(Product.class);
 
@@ -72,7 +76,8 @@ public class OrderUseCaseImplTest {
                 () -> orderUseCase.createOrder(orderMock,
                         gatewayMock,
                         productGatewayMock,
-                        customerGatewayMock)
+                        customerGatewayMock,
+                        orquestrationGateway)
         );
     }
 
@@ -119,7 +124,7 @@ public class OrderUseCaseImplTest {
                 .totalValue(BigDecimal.ONE)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(null)
-                .status(OrderStatus.RECEIVED)
+                .status(OrderStatus.CREATED)
                 .paymentStatus(OrderPaymentStatus.PENDING)
                 .build();
     }

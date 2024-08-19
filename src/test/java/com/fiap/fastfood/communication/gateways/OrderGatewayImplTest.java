@@ -87,7 +87,7 @@ public class OrderGatewayImplTest {
                 .totalValue(BigDecimal.ONE)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(null)
-                .status(OrderStatus.RECEIVED)
+                .status(OrderStatus.CREATED)
                 .paymentStatus(OrderPaymentStatus.PENDING)
                 .build();
     }
