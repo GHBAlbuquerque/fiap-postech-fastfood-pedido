@@ -14,9 +14,6 @@ import java.util.Date;
 @RestControllerAdvice
 public class ExceptionControllerHandler extends ResponseEntityExceptionHandler {
 
-    //TODO: ADICIONAR EXCEÇÕES CUSTOMIZADAS QUE FOREM FEITAS
-
-
     @ExceptionHandler(value = {AlreadyRegisteredException.class})
     public ResponseEntity<ExceptionDetails> resourceException(AlreadyRegisteredException ex, WebRequest request) {
 

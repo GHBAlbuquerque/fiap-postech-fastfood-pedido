@@ -21,7 +21,6 @@ public interface CustomerHTTPClient {
     );
 
     @GetMapping(value = "/customers")
-        //TODO conferir path
     ResponseEntity<GetCustomerResponse> getCustomerByCpf(
             @RequestParam("cpf") final String customerCpf,
             @RequestHeader("microsservice") final String microsservico,
