@@ -1,6 +1,7 @@
 package com.fiap.fastfood.core.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
+import com.fiap.fastfood.common.exceptions.custom.OrderCancellationException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
@@ -190,7 +191,7 @@ class OrderUseCaseImplTest {
 
         // Act & Assert
         Assertions.assertThrows(
-                OrderCreationException.class,
+                OrderCancellationException.class,
                 () -> orderUseCase.cancelOrder(order,
                         orderGateway,
                         orquestrationGateway)
