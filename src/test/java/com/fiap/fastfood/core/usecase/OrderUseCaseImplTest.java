@@ -9,10 +9,10 @@ import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.logging.TransactionInformationStorage;
 import com.fiap.fastfood.core.entity.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -31,19 +31,17 @@ class OrderUseCaseImplTest {
     @InjectMocks
     private OrderUseCaseImpl orderUseCase;
 
+    @Mock
     private OrderGateway orderGateway;
+
+    @Mock
     private ProductGateway productGateway;
+
+    @Mock
     private CustomerGateway customerGateway;
+
+    @Mock
     private OrquestrationGateway orquestrationGateway;
-
-    @BeforeEach
-    public void setUp() {
-        orderGateway = mock(OrderGateway.class);
-        productGateway = mock(ProductGateway.class);
-        customerGateway = mock(CustomerGateway.class);
-        orquestrationGateway = mock(OrquestrationGateway.class);
-    }
-
 
     @Test
     void testCreateOrderSuccess() throws EntityNotFoundException {

@@ -2,6 +2,7 @@ package com.fiap.fastfood.common.interfaces.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
+import com.fiap.fastfood.common.exceptions.custom.OrderCancellationException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
@@ -30,7 +31,7 @@ public interface OrderUseCase {
 
     Order cancelOrder(Order order,
                       OrderGateway orderGateway,
-                      OrquestrationGateway orquestrationGateway) throws OrderCreationException;
+                      OrquestrationGateway orquestrationGateway) throws OrderCreationException, OrderCancellationException;
 
     List<Order> listOrder(OrderGateway orderGateway);
 

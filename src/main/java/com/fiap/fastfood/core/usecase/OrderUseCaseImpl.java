@@ -2,13 +2,13 @@ package com.fiap.fastfood.core.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.exceptions.custom.ExceptionCodes;
+import com.fiap.fastfood.common.exceptions.custom.OrderCancellationException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrquestrationGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
-import com.fiap.fastfood.common.logging.Constants;
 import com.fiap.fastfood.common.logging.LoggingPattern;
 import com.fiap.fastfood.common.logging.TransactionInformationStorage;
 import com.fiap.fastfood.core.entity.*;
@@ -192,7 +192,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
     }
 
     @Override
-    public Order cancelOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCreationException {
+    public Order cancelOrder(Order order, OrderGateway orderGateway, OrquestrationGateway orquestrationGateway) throws OrderCancellationException, OrderCreationException {
         logger.info(
                 LoggingPattern.ORDER_CANCELLATION_INIT_LOG,
                 TransactionInformationStorage.getSagaId()
@@ -237,7 +237,7 @@ public class OrderUseCaseImpl implements OrderUseCase {
                 );
             }
 
-            throw new OrderCreationException(
+            throw new OrderCancellationException(
                     ExceptionCodes.ORDER_11_ORDER_CANCEL,
                     String.format("Error cancelling order. Error: %s", ex.getMessage())
             );

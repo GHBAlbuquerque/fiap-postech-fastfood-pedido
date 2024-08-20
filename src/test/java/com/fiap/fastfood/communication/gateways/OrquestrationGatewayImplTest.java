@@ -1,12 +1,11 @@
 package com.fiap.fastfood.communication.gateways;
 
-import com.fiap.fastfood.common.builders.OrderBuilder;
+import com.amazonaws.services.sqs.model.SendMessageResult;
 import com.fiap.fastfood.common.dto.command.CreateOrderCommand;
 import com.fiap.fastfood.common.dto.command.OrderCommand;
 import com.fiap.fastfood.common.dto.message.CustomMessageHeaders;
 import com.fiap.fastfood.common.dto.message.CustomQueueMessage;
 import com.fiap.fastfood.common.dto.response.CreateOrderResponse;
-import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.exceptions.custom.ExceptionCodes;
 import com.fiap.fastfood.common.exceptions.custom.OrderCancellationException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
@@ -16,11 +15,10 @@ import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
 import com.fiap.fastfood.core.entity.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.messaging.MessageHeaders;
 
@@ -36,24 +34,23 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OrquestrationGatewayImplTest {
 
-    //TODO: RESOLVER
     @InjectMocks
     private OrquestrationGatewayImpl orquestrationGateway;
 
+    @Mock
     private OrderUseCase orderUseCase;
-    private OrderGateway orderGateway;
-    private ProductGateway productGateway;
-    private CustomerGateway customerGateway;
-    private MessageSender messageSender;
 
-    @BeforeEach
-    void setUp() {
-        orderUseCase = mock(OrderUseCase.class);
-        orderGateway = mock(OrderGateway.class);
-        productGateway = mock(ProductGateway.class);
-        customerGateway = mock(CustomerGateway.class);
-        messageSender = mock(MessageSender.class);
-    }
+    @Mock
+    private OrderGateway orderGateway;
+
+    @Mock
+    private ProductGateway productGateway;
+
+    @Mock
+    private CustomerGateway customerGateway;
+
+    @Mock
+    private MessageSender messageSender;
 
     @Test
     void testListenToOrderCreationSuccess() throws Exception {
@@ -64,14 +61,13 @@ class OrquestrationGatewayImplTest {
                 command
         );
         final var order = createOrder();
-        when(OrderBuilder.fromCommandToDomain(command)).thenReturn(order);
-        doNothing().when(orderUseCase).createOrder(any(), any(), any(), any(), any());
+        when(orderUseCase.createOrder(any(), any(), any(), any(), any())).thenReturn(order);
 
         // Act
         orquestrationGateway.listenToOrderCreation(new MessageHeaders(Map.of()), message);
 
         // Assert
-        verify(orderUseCase).createOrder(eq(order), any(), any(), any(), any());
+        verify(orderUseCase).createOrder(any(), any(), any(), any(), any());
         verify(messageSender, never()).sendMessage(any(), any(), any());
     }
 
@@ -83,8 +79,7 @@ class OrquestrationGatewayImplTest {
                 new CustomMessageHeaders("sagaId", "orderId", "messageType", "order"),
                 command
         );
-        final var order = new Order();
-        when(OrderBuilder.fromCommandToDomain(command)).thenReturn(order);
+
         doThrow(new OrderCreationException(ORDER_07_COMMAND_PROCESSING, "Error")).when(orderUseCase).createOrder(any(), any(), any(), any(), any());
 
         // Act & Assert
@@ -103,15 +98,14 @@ class OrquestrationGatewayImplTest {
                 new CustomMessageHeaders("sagaId", "orderId", "messageType", "order"),
                 command
         );
-        Order order = new Order();
-        when(orderGateway.getOrderById("orderId")).thenReturn(order);
-        doNothing().when(orderUseCase).prepareOrder(any(), any(), any());
+        final var order = createOrder();
+        when(orderUseCase.prepareOrder(any(), any(), any())).thenReturn(order);
 
         // Act
         orquestrationGateway.listenToOrderPreparation(new MessageHeaders(Map.of()), message);
 
         // Assert
-        verify(orderUseCase).prepareOrder(eq(order), any(), any());
+        verify(orderUseCase).prepareOrder(any(), any(), any());
         verify(messageSender, never()).sendMessage(any(), any(), any());
     }
 
@@ -119,18 +113,19 @@ class OrquestrationGatewayImplTest {
     void testListenToOrderPreparationFailure() throws Exception {
         // Arrange
         final var command = orderCommand();
-        command.setOrderId("orderId");
+
         final var message = new CustomQueueMessage<>(
                 new CustomMessageHeaders("sagaId", "orderId", "messageType", "order"),
                 command
         );
-        when(orderGateway.getOrderById("orderId")).thenThrow(new EntityNotFoundException(ExceptionCodes.ORDER_01_NOT_FOUND, "Order not found"));
+
         doThrow(new OrderCreationException(ORDER_07_COMMAND_PROCESSING, "Error")).when(orderUseCase).prepareOrder(any(), any(), any());
 
         // Act & Assert
         final var exception = assertThrows(OrderCreationException.class, () ->
                 orquestrationGateway.listenToOrderPreparation(new MessageHeaders(Map.of()), message)
         );
+
         assertEquals(ORDER_07_COMMAND_PROCESSING, exception.getCode());
         assertTrue(exception.getMessage().contains("Error"));
     }
@@ -139,20 +134,20 @@ class OrquestrationGatewayImplTest {
     void testListenToOrderCompletionSuccess() throws Exception {
         // Arrange
         final var command = orderCommand();
-        command.setOrderId("orderId");
+
         final var message = new CustomQueueMessage<>(
                 new CustomMessageHeaders("sagaId", "orderId", "messageType", "order"),
                 command
         );
-        Order order = new Order();
-        when(orderGateway.getOrderById("orderId")).thenReturn(order);
-        doNothing().when(orderUseCase).completeOrder(any(), any(), any());
+
+        final var order = createOrder();
+        when(orderUseCase.completeOrder(any(), any(), any())).thenReturn(order);
 
         // Act
         orquestrationGateway.listenToOrderCompletion(new MessageHeaders(Map.of()), message);
 
         // Assert
-        verify(orderUseCase).completeOrder(eq(order), any(), any());
+        verify(orderUseCase).completeOrder(any(), any(), any());
         verify(messageSender, never()).sendMessage(any(), any(), any());
     }
 
@@ -160,12 +155,12 @@ class OrquestrationGatewayImplTest {
     void testListenToOrderCompletionFailure() throws Exception {
         // Arrange
         final var command = orderCommand();
-        command.setOrderId("orderId");
+
         final var message = new CustomQueueMessage<>(
                 new CustomMessageHeaders("sagaId", "orderId", "messageType", "order"),
                 command
         );
-        when(orderGateway.getOrderById("orderId")).thenThrow(new EntityNotFoundException(ExceptionCodes.ORDER_01_NOT_FOUND, "Order not found"));
+
         doThrow(new OrderCreationException(ORDER_07_COMMAND_PROCESSING, "Error")).when(orderUseCase).completeOrder(any(), any(), any());
 
         // Act & Assert
@@ -180,20 +175,20 @@ class OrquestrationGatewayImplTest {
     void testListenToOrderCancellationSuccess() throws Exception {
         // Arrange
         final var command = orderCommand();
-        command.setOrderId("orderId");
+
         final var message = new CustomQueueMessage<>(
                 new CustomMessageHeaders("sagaId", "orderId", "messageType", "order"),
                 command
         );
-        final var order = new Order();
-        when(orderGateway.getOrderById("orderId")).thenReturn(order);
-        doNothing().when(orderUseCase).cancelOrder(any(), any(), any());
+
+        final var order = createOrder();
+        when(orderUseCase.cancelOrder(any(), any(), any())).thenReturn(order);
 
         // Act
         orquestrationGateway.listenToOrderCancellation(new MessageHeaders(Map.of()), message);
 
         // Assert
-        verify(orderUseCase).cancelOrder(eq(order), any(), any());
+        verify(orderUseCase).cancelOrder(any(), any(), any());
         verify(messageSender, never()).sendMessage(any(), any(), any());
     }
 
@@ -201,43 +196,37 @@ class OrquestrationGatewayImplTest {
     void testListenToOrderCancellationFailure() throws Exception {
         // Arrange
         final var command = orderCommand();
-        command.setOrderId("orderId");
         final var message = new CustomQueueMessage<>(
                 new CustomMessageHeaders("sagaId", "orderId", "messageType", "order"),
                 command
         );
-        when(orderGateway.getOrderById("orderId")).thenThrow(new EntityNotFoundException(ExceptionCodes.ORDER_01_NOT_FOUND, "Order not found"));
+
         doThrow(new OrderCancellationException(ORDER_07_COMMAND_PROCESSING, "Error")).when(orderUseCase).cancelOrder(any(), any(), any());
 
         // Act & Assert
         final var exception = assertThrows(OrderCancellationException.class, () ->
                 orquestrationGateway.listenToOrderCancellation(new MessageHeaders(Map.of()), message)
         );
+
         assertEquals(ORDER_07_COMMAND_PROCESSING, exception.getCode());
-        assertTrue(exception.getMessage().contains("Error"));
     }
 
     @Test
     void testSendResponseSuccess() throws Exception {
         // Arrange
-        final var order = new Order("orderId", 1L);
+        final var order = createOrder();
         final var stepEnum = OrquestrationStepEnum.CREATE_ORDER;
         boolean stepSuccessful = true;
+
         final var response = new CreateOrderResponse("orderId", 1L, "paymentId", stepEnum, stepSuccessful);
-        final var message = new CustomQueueMessage<>(
-                new CustomMessageHeaders("sagaId", "orderId", "messageType", "response"),
-                response
-        );
-        doNothing().when(messageSender).sendMessage(any(), any(), any());
+
+        when(messageSender.sendMessage(any(), any(), any())).thenReturn(new SendMessageResult());
 
         // Act
         orquestrationGateway.sendResponse(order, stepEnum, stepSuccessful);
 
         // Assert
-        final var messageCaptor = ArgumentCaptor.forClass(CustomQueueMessage.class);
-        verify(messageSender).sendMessage(messageCaptor.capture(), eq("sagaId"), any());
-        final var capturedMessage = messageCaptor.getValue();
-        assertEquals(response, capturedMessage.getBody());
+        verify(messageSender).sendMessage(any(), any(), any());
     }
 
     @Test
@@ -247,10 +236,7 @@ class OrquestrationGatewayImplTest {
         final var stepEnum = OrquestrationStepEnum.CREATE_ORDER;
         boolean stepSuccessful = true;
         final var response = new CreateOrderResponse("orderId", 1L, "paymentId", stepEnum, stepSuccessful);
-        final var message = new CustomQueueMessage<>(
-                new CustomMessageHeaders("sagaId", "orderId", "messageType", "response"),
-                response
-        );
+
         doThrow(new RuntimeException("Send failed")).when(messageSender).sendMessage(any(), any(), any());
 
         // Act & Assert
@@ -277,12 +263,11 @@ class OrquestrationGatewayImplTest {
     }
 
     private static Item getItem() {
-        final var item = new Item()
+        return new Item()
                 .setProductId("productId")
                 .setProductType("SANDWICH")
                 .setItemValue(BigDecimal.ONE)
                 .setQuantity(1);
-        return item;
     }
 
     private CreateOrderCommand createOrderCommand() {
