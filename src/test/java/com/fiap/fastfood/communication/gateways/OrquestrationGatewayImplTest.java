@@ -5,7 +5,6 @@ import com.fiap.fastfood.common.dto.command.CreateOrderCommand;
 import com.fiap.fastfood.common.dto.command.OrderCommand;
 import com.fiap.fastfood.common.dto.message.CustomMessageHeaders;
 import com.fiap.fastfood.common.dto.message.CustomQueueMessage;
-import com.fiap.fastfood.common.dto.response.CreateOrderResponse;
 import com.fiap.fastfood.common.exceptions.custom.ExceptionCodes;
 import com.fiap.fastfood.common.exceptions.custom.OrderCancellationException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
@@ -218,8 +217,6 @@ class OrquestrationGatewayImplTest {
         final var stepEnum = OrquestrationStepEnum.CREATE_ORDER;
         boolean stepSuccessful = true;
 
-        final var response = new CreateOrderResponse("orderId", 1L, "paymentId", stepEnum, stepSuccessful);
-
         when(messageSender.sendMessage(any(), any(), any())).thenReturn(new SendMessageResult());
 
         // Act
@@ -235,7 +232,6 @@ class OrquestrationGatewayImplTest {
         final var order = new Order("orderId", 1L);
         final var stepEnum = OrquestrationStepEnum.CREATE_ORDER;
         boolean stepSuccessful = true;
-        final var response = new CreateOrderResponse("orderId", 1L, "paymentId", stepEnum, stepSuccessful);
 
         doThrow(new RuntimeException("Send failed")).when(messageSender).sendMessage(any(), any(), any());
 

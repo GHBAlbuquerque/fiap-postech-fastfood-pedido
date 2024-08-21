@@ -14,7 +14,7 @@ import java.util.List;
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class OrderControllerTest {
+class OrderControllerTest {
 
     @Value("${server.port}")
     private int port;
