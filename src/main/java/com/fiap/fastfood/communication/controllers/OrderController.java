@@ -1,13 +1,9 @@
 package com.fiap.fastfood.communication.controllers;
 
 import com.fiap.fastfood.common.builders.OrderBuilder;
-import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
-import com.fiap.fastfood.common.dto.response.CreatedOrderResponse;
 import com.fiap.fastfood.common.dto.response.GetOrderPaymentStatusResponse;
 import com.fiap.fastfood.common.dto.response.GetOrderResponse;
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
-import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
-import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.exceptions.model.ExceptionDetails;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
@@ -17,11 +13,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
