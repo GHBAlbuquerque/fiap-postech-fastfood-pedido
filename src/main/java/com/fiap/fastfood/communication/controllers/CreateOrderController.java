@@ -1,6 +1,7 @@
 package com.fiap.fastfood.communication.controllers;
 
 import com.fiap.fastfood.common.builders.OrderBuilder;
+import com.fiap.fastfood.common.dto.message.CustomMessageHeaders;
 import com.fiap.fastfood.common.dto.request.CreateOrderRequest;
 import com.fiap.fastfood.common.dto.response.CreatedOrderResponse;
 import com.fiap.fastfood.common.exceptions.custom.NoSuchEntityException;
@@ -11,6 +12,7 @@ import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrquestrationGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.common.interfaces.usecase.OrderUseCase;
+import com.fiap.fastfood.common.logging.TransactionInformationStorage;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,10 +51,13 @@ public class CreateOrderController {
             @ApiResponse(responseCode = "404", description = "Not Found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionDetails.class)))
     })
-    @PostMapping(produces = "application/json"/*, consumes = "application/json"*/)
+    @PostMapping(produces = "application/json", consumes = "application/json")
     public ResponseEntity<CreatedOrderResponse> createOrder(
             @Valid @RequestBody CreateOrderRequest request)
             throws OrderCreationException, NoSuchEntityException {
+        TransactionInformationStorage.putReceiveCount("1");
+        TransactionInformationStorage.fill(new CustomMessageHeaders("sagaId", "orderId", "REQUEST", "OWASP"));
+
         final var result = useCase.createOrder(
                 OrderBuilder.fromRequestToDomain(request),
                 gateway,
