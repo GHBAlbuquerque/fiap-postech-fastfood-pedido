@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class UseCaseBeanDeclarationTest {
+class UseCaseBeanDeclarationTest {
 
     @InjectMocks
     private UseCaseBeanDeclaration declaration;
@@ -15,13 +15,6 @@ public class UseCaseBeanDeclarationTest {
     @Test
     void orderUseCaseTest() {
         final var result = declaration.orderUseCase();
-
-        Assertions.assertNotNull(result);
-    }
-
-    @Test
-    void checkoutUseCaseTest() {
-        final var result = declaration.checkoutUseCase();
 
         Assertions.assertNotNull(result);
     }

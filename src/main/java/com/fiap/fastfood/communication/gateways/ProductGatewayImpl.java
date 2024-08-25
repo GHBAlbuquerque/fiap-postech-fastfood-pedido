@@ -2,6 +2,7 @@ package com.fiap.fastfood.communication.gateways;
 
 import com.fiap.fastfood.common.builders.ProductBuilder;
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
+import com.fiap.fastfood.common.exceptions.custom.ExceptionCodes;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
 import com.fiap.fastfood.core.entity.Product;
 import com.fiap.fastfood.external.services.products.ProductHTTPClient;
@@ -26,7 +27,7 @@ public class ProductGatewayImpl implements ProductGateway {
 
         if (response == null) {
             throw new EntityNotFoundException(
-                    "ORDER-03",
+                    ExceptionCodes.ORDER_03_PRODUCT_ID_UNMATCH,
                     String.format("Product with ID %s on Order Item not found", id)
             );
         }

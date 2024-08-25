@@ -1,8 +1,9 @@
 package com.fiap.fastfood.core.entity;
 
 public enum OrderStatus {
-    READY,
+    CREATED,
     IN_PREPARATION,
-    RECEIVED,
-    COMPLETED
+    READY,
+    COMPLETED,
+    CANCELLED
 }

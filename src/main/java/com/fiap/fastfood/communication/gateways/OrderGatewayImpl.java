@@ -5,15 +5,15 @@ import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
 import com.fiap.fastfood.common.interfaces.datasources.OrderRepository;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
 import com.fiap.fastfood.core.entity.Order;
+import com.fiap.fastfood.core.entity.OrderPaymentStatus;
 import com.fiap.fastfood.core.entity.OrderStatus;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
+import static com.fiap.fastfood.common.exceptions.custom.ExceptionCodes.ORDER_01_NOT_FOUND;
+
 public class OrderGatewayImpl implements OrderGateway {
 
     private final OrderRepository repository;
@@ -32,8 +32,23 @@ public class OrderGatewayImpl implements OrderGateway {
     public Order getOrderById(String id) throws EntityNotFoundException {
         return repository.findById(id)
                 .map(OrderBuilder::fromOrmToDomain)
-                .orElseThrow(() -> new EntityNotFoundException("ORDER-01", String.format("Order with ID %s not found", id)));
+                .orElseThrow(() -> new EntityNotFoundException(ORDER_01_NOT_FOUND, String.format("Order with ID %s not found", id)));
     }
+
+    @Override
+    public Order updateOrderStatus(String id, OrderStatus orderStatus) throws EntityNotFoundException {
+        final var order = getOrderById(id);
+        order.setStatus(orderStatus);
+        return saveOrder(order);
+    }
+
+    @Override
+    public Order updateOrderPaymentStatus(String id, OrderPaymentStatus orderPaymentStatus) throws EntityNotFoundException {
+        final var order = getOrderById(id);
+        order.setPaymentStatus(orderPaymentStatus);
+        return saveOrder(order);
+    }
+
 
     @Override
     public List<Order> listOrder() {
@@ -52,7 +67,7 @@ public class OrderGatewayImpl implements OrderGateway {
         return switch (status) {
             case READY -> 1;
             case IN_PREPARATION -> 2;
-            case RECEIVED -> 3;
+            case CREATED -> 3;
             default -> 0;
         };
     }

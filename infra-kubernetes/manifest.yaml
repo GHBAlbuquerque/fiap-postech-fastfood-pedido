@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: fiap-postech-fastfood-pedido
-          image: 731362576078.dkr.ecr.us-east-1.amazonaws.com/fiap_postech_fastfood_pedido:${IMAGE_TAG} #pegar uri do repositório ECR
+          image: 673847524989.dkr.ecr.us-east-1.amazonaws.com/fiap_postech_fastfood_pedido:${IMAGE_TAG} #pegar uri do repositório ECR
           imagePullPolicy: Always
           resources:
             requests:
@@ -26,9 +26,11 @@ spec:
               memory: "1Gi"
           env:
             - name: MS_PRODUTO_URL
-              value: "http://alb-cluster-fiap-2100904419.us-east-1.elb.amazonaws.com"
+              value: "http://alb-cluster-fiap-23276194.us-east-1.elb.amazonaws.com"
             - name: MS_CLIENTE_URL
-              value: "http://alb-cluster-fiap-2100904419.us-east-1.elb.amazonaws.com"
+              value: "http://alb-cluster-fiap-23276194.us-east-1.elb.amazonaws.com"
+            - name: ACCOUNT_ID
+              value: "673847524989"
           ports:
             - containerPort: 80
               protocol: TCP

@@ -1,10 +1,19 @@
 package com.fiap.fastfood.common.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
+import com.fiap.fastfood.core.entity.OrquestrationStepEnum;
+import lombok.*;
 
-@Builder
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class CreateOrderResponse {
-    private String id;
+
+    private String orderId;
+    private Long customerId;
+    private String paymentId;
+    private OrquestrationStepEnum executedStep;
+    private Boolean stepSuccessful;
+
 }

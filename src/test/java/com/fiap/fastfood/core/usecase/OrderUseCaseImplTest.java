@@ -1,15 +1,19 @@
 package com.fiap.fastfood.core.usecase;
 
 import com.fiap.fastfood.common.exceptions.custom.EntityNotFoundException;
+import com.fiap.fastfood.common.exceptions.custom.OrderCancellationException;
 import com.fiap.fastfood.common.exceptions.custom.OrderCreationException;
 import com.fiap.fastfood.common.interfaces.gateways.CustomerGateway;
 import com.fiap.fastfood.common.interfaces.gateways.OrderGateway;
+import com.fiap.fastfood.common.interfaces.gateways.OrquestrationGateway;
 import com.fiap.fastfood.common.interfaces.gateways.ProductGateway;
+import com.fiap.fastfood.common.logging.TransactionInformationStorage;
 import com.fiap.fastfood.core.entity.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -17,68 +21,187 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class OrderUseCaseImplTest {
+class OrderUseCaseImplTest {
 
     @InjectMocks
     private OrderUseCaseImpl orderUseCase;
 
-    @Test
-    void createOrderTest() throws EntityNotFoundException {
-        final var gatewayMock = Mockito.mock(OrderGateway.class);
-        final var productGatewayMock = Mockito.mock(ProductGateway.class);
-        final var customerGatewayMock = Mockito.mock(CustomerGateway.class);
-        final var orderMock = createOrder();
-        final var productMock = Mockito.mock(Product.class);
+    @Mock
+    private OrderGateway orderGateway;
 
-        Mockito.when(gatewayMock.saveOrder(orderMock))
+    @Mock
+    private ProductGateway productGateway;
+
+    @Mock
+    private CustomerGateway customerGateway;
+
+    @Mock
+    private OrquestrationGateway orquestrationGateway;
+
+    @Test
+    void testCreateOrderSuccess() throws EntityNotFoundException {
+        final var orderMock = createOrder();
+        final var productMock = mock(Product.class);
+
+        Mockito.when(orderGateway.saveOrder(orderMock))
                 .thenReturn(orderMock);
 
-        Mockito.when(productGatewayMock.getProductByIdAndType(anyString(), anyString()))
+        Mockito.when(productGateway.getProductByIdAndType(anyString(), anyString()))
                 .thenReturn(productMock);
 
-        Mockito.when(productGatewayMock.validateProductValue(BigDecimal.ONE, productMock))
+        Mockito.when(productGateway.validateProductValue(BigDecimal.ONE, productMock))
                 .thenReturn(Boolean.TRUE);
 
         final var result =
                 Assertions.assertDoesNotThrow(
                         () -> orderUseCase.createOrder(orderMock,
-                                gatewayMock,
-                                productGatewayMock,
-                                customerGatewayMock)
+                                orderGateway,
+                                productGateway,
+                                customerGateway,
+                                orquestrationGateway)
                 );
 
-        Assertions.assertNotNull(result);
+        assertNotNull(result);
     }
 
     @Test
-    void createOrderErrorTest() throws EntityNotFoundException {
-        final var gatewayMock = Mockito.mock(OrderGateway.class);
-        final var productGatewayMock = Mockito.mock(ProductGateway.class);
-        final var customerGatewayMock = Mockito.mock(CustomerGateway.class);
+    void testCreateOrderError() throws EntityNotFoundException {
         final var orderMock = createOrder();
-        final var productMock = Mockito.mock(Product.class);
+        final var productMock = mock(Product.class);
 
-        Mockito.when(productGatewayMock.getProductByIdAndType(anyString(), anyString()))
+        TransactionInformationStorage.putReceiveCount("1");
+
+        Mockito.when(productGateway.getProductByIdAndType(anyString(), anyString()))
                 .thenReturn(productMock);
 
-        Mockito.when(productGatewayMock.validateProductValue(BigDecimal.ONE, productMock))
+        Mockito.when(productGateway.validateProductValue(BigDecimal.ONE, productMock))
                 .thenReturn(Boolean.FALSE);
 
         Assertions.assertThrows(
                 OrderCreationException.class,
                 () -> orderUseCase.createOrder(orderMock,
-                        gatewayMock,
-                        productGatewayMock,
-                        customerGatewayMock)
+                        orderGateway,
+                        productGateway,
+                        customerGateway,
+                        orquestrationGateway)
         );
     }
 
     @Test
+    void testPrepareOrderSuccess() throws Exception {
+        // Arrange
+        Order order = new Order();
+        order.setId("123");
+
+        // Act
+        Order result = orderUseCase.prepareOrder(order, orderGateway, orquestrationGateway);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(order, result);
+        verify(orderGateway).updateOrderPaymentStatus(order.getId(), OrderPaymentStatus.APPROVED);
+        verify(orderGateway).updateOrderStatus(order.getId(), OrderStatus.IN_PREPARATION);
+        verify(orquestrationGateway).sendResponse(order, OrquestrationStepEnum.PREPARE_ORDER, Boolean.TRUE);
+    }
+
+    @Test
+    void testPrepareOrderFailure() throws Exception {
+        // Arrange
+        Order order = new Order();
+        order.setId("123");
+        TransactionInformationStorage.putReceiveCount("1");
+
+        doThrow(new RuntimeException("Simulated exception")).when(orderGateway).updateOrderStatus(anyString(), any());
+
+        // Act & Assert
+        Assertions.assertThrows(
+                OrderCreationException.class,
+                () -> orderUseCase.prepareOrder(order,
+                        orderGateway,
+                        orquestrationGateway)
+        );
+    }
+
+
+    @Test
+    void testCompleteOrderSuccess() throws Exception {
+        // Arrange
+        Order order = new Order();
+        order.setId("123");
+
+        // Act
+        Order result = orderUseCase.completeOrder(order, orderGateway, orquestrationGateway);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(order, result);
+        verify(orderGateway).updateOrderStatus(order.getId(), OrderStatus.COMPLETED);
+        verify(orquestrationGateway).sendResponse(order, OrquestrationStepEnum.COMPLETE_ORDER, Boolean.TRUE);
+    }
+
+    @Test
+    void testCompleteOrderFailure() throws Exception {
+        // Arrange
+        Order order = new Order();
+        order.setId("123");
+        TransactionInformationStorage.putReceiveCount("1");
+
+        doThrow(new RuntimeException("Simulated exception")).when(orderGateway).updateOrderStatus(anyString(), any());
+
+        // Act & Assert
+        Assertions.assertThrows(
+                OrderCreationException.class,
+                () -> orderUseCase.completeOrder(order,
+                        orderGateway,
+                        orquestrationGateway)
+        );
+    }
+
+    @Test
+    void testCancelOrderSuccess() throws Exception {
+        // Arrange
+        Order order = new Order();
+        order.setId("123");
+
+        // Act
+        Order result = orderUseCase.cancelOrder(order, orderGateway, orquestrationGateway);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(order, result);
+        verify(orderGateway).updateOrderStatus(order.getId(), OrderStatus.CANCELLED);
+        verify(orderGateway).updateOrderPaymentStatus(order.getId(), OrderPaymentStatus.REJECTED);
+        verify(orquestrationGateway).sendResponse(order, OrquestrationStepEnum.CANCEL_ORDER, Boolean.TRUE);
+    }
+
+    @Test
+    void testCancelOrderFailure() throws Exception {
+        // Arrange
+        Order order = new Order();
+        order.setId("123");
+        TransactionInformationStorage.putReceiveCount("1");
+
+        doThrow(new RuntimeException("Simulated exception")).when(orderGateway).updateOrderStatus(anyString(), any());
+
+        // Act & Assert
+        Assertions.assertThrows(
+                OrderCancellationException.class,
+                () -> orderUseCase.cancelOrder(order,
+                        orderGateway,
+                        orquestrationGateway)
+        );
+    }
+
+
+    @Test
     void listOrderTest() {
-        final var gatewayMock = Mockito.mock(OrderGateway.class);
+        final var gatewayMock = mock(OrderGateway.class);
         final var orderMock = createOrder();
 
 
@@ -91,8 +214,8 @@ public class OrderUseCaseImplTest {
     }
 
     @Test
-    void getOrderByIdTest() throws EntityNotFoundException {
-        final var gatewayMock = Mockito.mock(OrderGateway.class);
+    void getOrderByIdSuccessTest() throws EntityNotFoundException {
+        final var gatewayMock = mock(OrderGateway.class);
         final var orderMock = createOrder();
 
 
@@ -101,9 +224,8 @@ public class OrderUseCaseImplTest {
 
         final var result = orderUseCase.getOrderById(orderMock.getId(), gatewayMock);
 
-        Assertions.assertNotNull(result);
+        assertNotNull(result);
     }
-
 
     private Order createOrder() {
         final var item = new Item()
@@ -119,10 +241,9 @@ public class OrderUseCaseImplTest {
                 .totalValue(BigDecimal.ONE)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(null)
-                .status(OrderStatus.RECEIVED)
+                .status(OrderStatus.CREATED)
                 .paymentStatus(OrderPaymentStatus.PENDING)
                 .build();
     }
-
 
 }
